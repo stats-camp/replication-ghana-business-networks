@@ -1,0 +1,9 @@
+. do "/tmp/ghana-audit-zodxe58u/work/code/master.do"
+line 14: ssc install estout
+Parse error at byte 0: error: unknown command 'ssc'. Did you mean 'desc'?
+  ssc install estout
+  ^
+r(199);
+
+end of do-file
+r(199);

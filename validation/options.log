@@ -1,0 +1,301 @@
+. do "/tmp/ghana-audit-zodxe58u/probes/options.do", nostop
+. use "/tmp/ghana-audit-zodxe58u/work/data/raw/gender_gaps_ghana.dta", clear
+note: 1487 of 1487 observations contain at least one missing value
+note: source timestamp: 2025-04-29 12:22
+note: 97 variable label(s) loaded
+note: 37 value label set(s) loaded
+(146 vars, 1,487 obs)
+. rename g6 y
+. rename a16 x
+. generate group = gender=="Female"
+. regress y x, r
+
+Linear regression                               Number of obs     =      1,405
+                                                F(1, 1403)        =       0.06
+                                                Prob > F          =     0.8134
+                                                R-squared         =     0.0000
+                                                Root MSE          =     6161.9
+
+--------------------------------------------------------------------------------
+             |               Robust
+           y | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------+------------------------------------------------------------------
+           x |    8.3145899   35.21839     0.24   0.813    -60.77178    77.40096
+       _cons |    2809.3233   325.2318     8.64   0.000      2171.33    3447.316
+--------------------------------------------------------------------------------
+. eststo A
+(eststo: stored A)
+. estpost summarize y x
+line 7: estpost summarize y x
+Parse error at byte 0: error: unknown command 'estpost'. Did you mean 'estout'?
+  estpost summarize y x
+  ^
+r(199);
+. estpost ttest y x, by(group)
+line 8: estpost ttest y x, by(group)
+Parse error at byte 0: error: unknown command 'estpost'. Did you mean 'estout'?
+  estpost ttest y x, by(group)
+  ^
+r(199);
+. estadd scalar mean 4, replace
+line 9: estadd scalar mean 4, replace
+Parse error at byte 0: error: unknown command 'estadd'. Did you mean 'estout'?
+  estadd scalar mean 4, replace
+  ^
+r(199);
+. estadd local industry "No", replace
+line 10: estadd local industry "No", replace
+Parse error at byte 0: error: unknown command 'estadd'. Did you mean 'estout'?
+  estadd local industry "No", replace
+  ^
+r(199);
+. esttab A using "/tmp/ghana-audit-zodxe58u/work/output/tables/check.tex", replace
+line 11: esttab A using "/tmp/ghana-audit-zodxe58u/work/output/tables/check.tex", replace
+Parse error at byte 9: error: esttab does not support the 'using' clause
+  esttab A using "/tmp/ghana-audit-zodxe58u/work/output/tables/check.tex", replace
+           ^
+r(198);
+. esttab A, cells("mean(pattern(1 1 1 0) fmt(2)) b(star pattern(0 0 0 1) fmt(2)) p(pattern(0 0 0 1) par fmt(2))")
+line 12: esttab A, cells("mean(pattern(1 1 1 0) fmt(2)) b(star pattern(0 0 0 1) fmt(2)) p(pattern(0 0 0 1) par fmt(2))")
+Parse error at byte 10: error: unknown option 'cells' for esttab; valid: b, se, t, z, p, ci, star, nostar, starlevels, ar2, stats, title, label, noobs, noconstant, keep, drop, order, mtitles, compress, varwidth, modelwidth, nonotes, addnotes, replace, indicate, noomitted, nonumbers
+  esttab A, cells("mean(pattern(1 1 1 0) fmt(2)) b(star pattern(0 0 0 1) fmt(2)) p(pattern(0 0 0 1) par fmt(2))")
+            ^
+r(198);
+. esttab A, star(* .10 * .05 ** .01)
+                    A
+---------------------
+x              8.3146
+             (0.2361)
+_cons     2809.3233**
+             (8.6379)
+---------------------
+N                1405
+** p<0.010, * p<0.050, * p<0.100
+. esttab A, label
+                    A
+---------------------
+x              8.3146
+             (0.2361)
+_cons    2809.3233***
+             (8.6379)
+---------------------
+N                1405
+*** p<0.001, ** p<0.010, * p<0.050
+. esttab A, nonum
+                    A
+---------------------
+x              8.3146
+             (0.2361)
+_cons    2809.3233***
+             (8.6379)
+---------------------
+N                1405
+*** p<0.001, ** p<0.010, * p<0.050
+. esttab A, collabels("Mean" "B" "p")
+line 16: esttab A, collabels("Mean" "B" "p")
+Parse error at byte 10: error: unknown option 'collabels' for esttab; valid: b, se, t, z, p, ci, star, nostar, starlevels, ar2, stats, title, label, noobs, noconstant, keep, drop, order, mtitles, compress, varwidth, modelwidth, nonotes, addnotes, replace, indicate, noomitted, nonumbers
+  esttab A, collabels("Mean" "B" "p")
+            ^
+r(198);
+. esttab A, booktabs
+line 17: esttab A, booktabs
+Parse error at byte 10: error: unknown option 'booktabs' for esttab; valid: b, se, t, z, p, ci, star, nostar, starlevels, ar2, stats, title, label, noobs, noconstant, keep, drop, order, mtitles, compress, varwidth, modelwidth, nonotes, addnotes, replace, indicate, noomitted, nonumbers
+  esttab A, booktabs
+            ^
+r(198);
+. esttab A, wide
+line 18: esttab A, wide
+Parse error at byte 10: error: unknown option 'wide' for esttab; valid: b, se, t, z, p, ci, star, nostar, starlevels, ar2, stats, title, label, noobs, noconstant, keep, drop, order, mtitles, compress, varwidth, modelwidth, nonotes, addnotes, replace, indicate, noomitted, nonumbers
+  esttab A, wide
+            ^
+r(198);
+. esttab A, mtitles("All" "Male" "Female" "Difference")
+line 19: esttab A, mtitles("All" "Male" "Female" "Difference")
+Parse error: mtitles() count (4) must match number of models (1)
+r(198);
+. esttab A, refcat(x "Products", nolabel)
+line 20: esttab A, refcat(x "Products", nolabel)
+Parse error at byte 10: error: unknown option 'refcat' for esttab; valid: b, se, t, z, p, ci, star, nostar, starlevels, ar2, stats, title, label, noobs, noconstant, keep, drop, order, mtitles, compress, varwidth, modelwidth, nonotes, addnotes, replace, indicate, noomitted, nonumbers
+  esttab A, refcat(x "Products", nolabel)
+            ^
+r(198);
+. esttab A, keep(x)
+                    A
+---------------------
+x              8.3146
+             (0.2361)
+---------------------
+N                1405
+*** p<0.001, ** p<0.010, * p<0.050
+. esttab A, se
+                    A
+---------------------
+x              8.3146
+            (35.2184)
+_cons    2809.3233***
+           (325.2318)
+---------------------
+N                1405
+*** p<0.001, ** p<0.010, * p<0.050
+. esttab A, r2
+line 23: esttab A, r2
+Parse error at byte 10: error: unknown option 'r2' for esttab; valid: b, se, t, z, p, ci, star, nostar, starlevels, ar2, stats, title, label, noobs, noconstant, keep, drop, order, mtitles, compress, varwidth, modelwidth, nonotes, addnotes, replace, indicate, noomitted, nonumbers
+  esttab A, r2
+            ^
+r(198);
+. esttab A, s(industry mean r2 N, label("Product FE" "Mean" "R2" "N") fmt(%9.3f %9.3f %9.3f %9.0f))
+line 24: esttab A, s(industry mean r2 N, label("Product FE" "Mean" "R2" "N") fmt(%9.3f %9.3f %9.3f %9.0f))
+Parse error at byte 10: error: unknown option 's' for esttab; valid: b, se, t, z, p, ci, star, nostar, starlevels, ar2, stats, title, label, noobs, noconstant, keep, drop, order, mtitles, compress, varwidth, modelwidth, nonotes, addnotes, replace, indicate, noomitted, nonumbers
+  esttab A, s(industry mean r2 N, label("Product FE" "Mean" "R2" "N") fmt(%9.3f %9.3f %9.3f %9.0f))
+            ^
+r(198);
+. esttab A, nomtitles
+line 25: esttab A, nomtitles
+Parse error at byte 10: error: unknown option 'nomtitles' for esttab; valid: b, se, t, z, p, ci, star, nostar, starlevels, ar2, stats, title, label, noobs, noconstant, keep, drop, order, mtitles, compress, varwidth, modelwidth, nonotes, addnotes, replace, indicate, noomitted, nonumbers
+  esttab A, nomtitles
+            ^
+r(198);
+. esttab A, f
+line 26: esttab A, f
+Parse error at byte 10: error: unknown option 'f' for esttab; valid: b, se, t, z, p, ci, star, nostar, starlevels, ar2, stats, title, label, noobs, noconstant, keep, drop, order, mtitles, compress, varwidth, modelwidth, nonotes, addnotes, replace, indicate, noomitted, nonumbers
+  esttab A, f
+            ^
+r(198);
+. esttab A, noomitted
+                    A
+---------------------
+x              8.3146
+             (0.2361)
+_cons    2809.3233***
+             (8.6379)
+---------------------
+N                1405
+*** p<0.001, ** p<0.010, * p<0.050
+. esttab A, nobaselevel
+line 28: esttab A, nobaselevel
+Parse error at byte 10: error: unknown option 'nobaselevel' for esttab; valid: b, se, t, z, p, ci, star, nostar, starlevels, ar2, stats, title, label, noobs, noconstant, keep, drop, order, mtitles, compress, varwidth, modelwidth, nonotes, addnotes, replace, indicate, noomitted, nonumbers
+  esttab A, nobaselevel
+            ^
+r(198);
+. matrix male = J(1,3,.)
+. matrix female = J(1,3,.)
+. matrix male[1,1] = 2
+. matrix female[1,1] = 3
+. matrix female[1,2] = 2.5
+. matrix female[1,3] = 3.5
+. matrix coln female = mean ll95 ul95
+line 35: matrix coln female = mean ll95 ul95
+invalid syntax
+r(198);
+. matrix female[1,1] = 3, 2.5, 3.5
+line 36: matrix female[1,1] = 3, 2.5, 3.5
+invalid syntax
+r(198);
+. coefplot (matrix(male[,1]), noci)
+line 37: coefplot (matrix(male[,1]), noci)
+Parse error: estimation result matrix(male[,1]) not found
+r(198);
+. coefplot (A, rename(x="Business Owners"))
+line 38: coefplot (A, rename(x="Business Owners"))
+Parse error: option rename() not allowed
+r(198);
+. coefplot (A, ci((female[,2] female[,3])))
+line 39: coefplot (A, ci((female[,2] female[,3])))
+Parse error: option ci() not allowed
+r(198);
+. coefplot (A, color(navy))
+line 40: coefplot (A, color(navy))
+Parse error: option color() not allowed
+r(198);
+. coefplot (A, nokey)
+line 41: coefplot (A, nokey)
+Parse error: option nokey not allowed
+r(198);
+. coefplot (A, mcolor(navy))
+line 42: coefplot (A, mcolor(navy))
+Parse error: option mcolor() not allowed
+r(198);
+. coefplot (A, ciopts(color(navy)))
+line 43: coefplot (A, ciopts(color(navy)))
+Parse error: only ciopts(recast(...)) is supported
+r(198);
+. coefplot (A, mlabsize(medium))
+line 44: coefplot (A, mlabsize(medium))
+Parse error: option mlabsize() not allowed
+r(198);
+. coefplot A, recast(bar)
+
+[coefplot - cannot be displayed in text format]
+. coefplot A, barwidth(0.25)
+line 46: coefplot A, barwidth(0.25)
+Parse error: option barwidth() not allowed
+r(198);
+. coefplot A, fcolor(*.75)
+line 47: coefplot A, fcolor(*.75)
+Parse error: option fcolor() not allowed
+r(198);
+. coefplot A, citop
+line 48: coefplot A, citop
+Parse error: option citop not allowed
+r(198);
+. coefplot A, ciopts(recast(rcap) color(gs8))
+
+[coefplot - cannot be displayed in text format]
+. coefplot A, base omitted
+line 50: coefplot A, base omitted
+Parse error: option base not allowed
+r(198);
+. coefplot A, mlabel
+line 51: coefplot A, mlabel
+Parse error: option mlabel not allowed
+r(198);
+. coefplot A, mlabcolor(black)
+line 52: coefplot A, mlabcolor(black)
+Parse error: option mlabcolor() not allowed
+r(198);
+. coefplot A, mlabp(2)
+line 53: coefplot A, mlabp(2)
+Parse error: option mlabp() not allowed
+r(198);
+. coefplot A, mlabg(*1.2)
+line 54: coefplot A, mlabg(*1.2)
+Parse error: option mlabg() not allowed
+r(198);
+. coefplot A, mlabf(%9.2f)
+line 55: coefplot A, mlabf(%9.2f)
+Parse error: option mlabf() not allowed
+r(198);
+. coefplot A, legend(position(6))
+
+[coefplot - cannot be displayed in text format]
+. coefplot A, plotregion(fcolor(white))
+
+[coefplot - cannot be displayed in text format]
+. coefplot A, graphregion(fcolor(white) ifcolor(white) color(white) icolor(white))
+
+[coefplot - cannot be displayed in text format]
+. coefplot A, bgcolor(white)
+line 59: coefplot A, bgcolor(white)
+Parse error: option bgcolor() not allowed
+r(198);
+. coefplot A, legend(rows(1))
+line 60: coefplot A, legend(rows(1))
+option legend(): suboption rows is not supported
+r(198);
+. coefplot A, grid(glcolor(gs14) glpattern(dash))
+line 61: coefplot A, grid(glcolor(gs14) glpattern(dash))
+Parse error: option grid() not allowed
+r(198);
+. coefplot A, xlabel(-.2(.2).6)
+line 62: coefplot A, xlabel(-.2(.2).6)
+a readable graph cannot fit within the 4096-pixel canvas limit; combine fewer panels or shorten graph labels
+r(198);
+. coefplot A, xline(0, lcolor(gs5))
+
+[coefplot - cannot be displayed in text format]
+. graph export "/tmp/ghana-audit-zodxe58u/work/output/figures/check.eps", replace
+line 64: graph export "/tmp/ghana-audit-zodxe58u/work/output/figures/check.eps", replace
+Invalid format: savegraph() supports only .svg, .png, and .pdf
+r(1);
+. 
+end of do-file

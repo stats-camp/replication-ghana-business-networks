@@ -1,0 +1,51 @@
+{
+  "package_id": 228101,
+  "version": "V1",
+  "archive_name": "228101-V1.zip",
+  "archive_sha256": "dfeb8acc03099b33cdf8940a4151997b9fb232f13c355dddfc267c00ccc8064f",
+  "archive_size_bytes": 378030,
+  "original_files_count": 6,
+  "unpacked_size_bytes": 1292196,
+  "files": [
+    {
+      "path": "README.pdf",
+      "size_bytes": 85230,
+      "sha256": "3d1243d5ffa2d9700dedb9b8f356f56b49c6d16743ac6066da7486a41eba7f7e"
+    },
+    {
+      "path": "code/clean.do",
+      "size_bytes": 10076,
+      "sha256": "a764e940d0aec92607ba9f1d61b9bc1031fa02dc00d2084f915b58278402f0f2"
+    },
+    {
+      "path": "code/master.do",
+      "size_bytes": 1359,
+      "sha256": "db175fd70633be9cd20001f03caffaf195192555dc4c43612f461dc733e088a7"
+    },
+    {
+      "path": "code/output.do",
+      "size_bytes": 11879,
+      "sha256": "677004ce975c69edd30996146cd3008328eef0d41df9514589d6391177133b4a"
+    },
+    {
+      "path": "data/raw/gender_gaps_ghana.dta",
+      "size_bytes": 1179331,
+      "sha256": "c357ea49a645b5a2ada8b5c521ae0598cf3b836814a6f0b81e4611f64daaa286"
+    },
+    {
+      "path": "zindex.ado",
+      "size_bytes": 4321,
+      "sha256": "95f4d1837d89f172db7e81e5ac8854c211d62bea1ac76c8c8e1a5dc135181bad"
+    }
+  ],
+  "original_directories": [
+    "code/",
+    "data/",
+    "data/analysis/",
+    "data/raw/",
+    "log/",
+    "output/",
+    "output/figures/",
+    "output/tables/"
+  ]
+}

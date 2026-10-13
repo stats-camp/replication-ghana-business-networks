@@ -1,0 +1,9 @@
+. global data "/tmp/ghana-audit-zodxe58u/work/data"
+
+. do "/tmp/ghana-audit-zodxe58u/work/code/clean.do"
+line 139: egen total_collab = rowtotal(b30a-b30g), missing
+Parse error: option missing not allowed for this egen function
+r(198);
+
+end of do-file
+r(198);

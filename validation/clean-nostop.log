@@ -1,0 +1,280 @@
+. global data "/tmp/ghana-audit-zodxe58u/work/data"
+
+. do "/tmp/ghana-audit-zodxe58u/work/code/clean.do", nostop
+. use "/tmp/ghana-audit-zodxe58u/work/data/raw/gender_gaps_ghana.dta", clear
+note: 1487 of 1487 observations contain at least one missing value
+note: source timestamp: 2025-04-29 12:22
+note: 97 variable label(s) loaded
+note: 37 value label set(s) loaded
+(146 vars, 1,487 obs)
+. rename a5 age
+. rename a16 years_operation
+. rename a17 monthly_revenues
+. rename b3 education
+. rename b4 marital_status
+. rename b8 children
+. gen female = gender=="Female"
+. replace female = . if gender==""
+. gen collegedegree =  education==27
+. replace collegedegree = . if education==. | education==-666
+. split b2, parse(" ") gen(products)
+variables created as string:
+products1 products2 products3 products4 products5 products6 products7 products8 products9 products10 products11 products12 products13 products14 products15 products16 products17 products18 products19 products20 products21 products22 products23 products24 products25 products26 products27 products28 products29 products30 products31 products32 products33 products34 products35 products36 products37 products38 products39 products40 products41 products42
+. reshape long products, i(caseid) j(n)
+(j = 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42)
+
+Data                               wide   ->   long
+-----------------------------------------------------
+Number of obs.                     1487   ->   62454
+Number of variables                 190   ->     150
+j variable (42 values)                    ->   n
+xij variables:
+products1 products2 products3 products4 products5 products6 products7 products8 products9 products10 products11 products12 products13 products14 products15 products16 products17 products18 products19 products20 products21 products22 products23 products24 products25 products26 products27 products28 products29 products30 products31 products32 products33 products34 products35 products36 products37 products38 products39 products40 products41 products42   ->   products
+. destring products, replace
+products: all characters numeric; replaced as int
+(58897 missing values generated)
+. gen product_aginput_aux = 1 if products>=1 & products<=7
+. gen product_livestock_aux = 1 if products>=8 & products<=14
+. gen product_crop_aux = 1 if products>=15 & products<=49
+. gen product_cocoa_aux = 1 if products>=50 & products<=51
+. gen product_forestry_aux = 1 if products>=53 & products<=55
+. gen product_fish_aux = 1 if products>=56 & products<=57
+. gen product_processed_aux = 1 if products>=58 & products<=63
+. gen product_other_aux = 1 if products ==-666
+. sort caseid
+. foreach x in aginput livestock crop cocoa forestry fish processed other {
+. by caseid: egen product_aginput = max(product_aginput_aux)
+. drop product_aginput_aux
+. by caseid: egen product_livestock = max(product_livestock_aux)
+. drop product_livestock_aux
+. by caseid: egen product_crop = max(product_crop_aux)
+. drop product_crop_aux
+. by caseid: egen product_cocoa = max(product_cocoa_aux)
+. drop product_cocoa_aux
+. by caseid: egen product_forestry = max(product_forestry_aux)
+. drop product_forestry_aux
+. by caseid: egen product_fish = max(product_fish_aux)
+. drop product_fish_aux
+. by caseid: egen product_processed = max(product_processed_aux)
+. drop product_processed_aux
+. by caseid: egen product_other = max(product_other_aux)
+. drop product_other_aux
+. keep if n==1
+. drop products
+. drop n
+. foreach x in aginput livestock crop cocoa forestry fish processed other {
+. replace product_aginput = 0 if product_aginput==.
+. replace product_aginput = . if b2==""
+. replace product_livestock = 0 if product_livestock==.
+. replace product_livestock = . if b2==""
+. replace product_crop = 0 if product_crop==.
+. replace product_crop = . if b2==""
+. replace product_cocoa = 0 if product_cocoa==.
+. replace product_cocoa = . if b2==""
+. replace product_forestry = 0 if product_forestry==.
+. replace product_forestry = . if b2==""
+. replace product_fish = 0 if product_fish==.
+. replace product_fish = . if b2==""
+. replace product_processed = 0 if product_processed==.
+. replace product_processed = . if b2==""
+. replace product_other = 0 if product_other==.
+. replace product_other = . if b2==""
+. gen married = marital_status == 3 | marital_status == 4
+. replace married = . if marital_status ==.
+. gen business_primary_inc = b11b==1
+. replace business_primary_inc = . if business_primary_inc==.
+. gen work_for_pay = b11c_1==1 | b11c_2==1 |  b11c_3==1 |  b11c_4==1 | b11c_5==1
+. replace work_for_pay =. if b11c ==""
+. gen business_at_home = b13== 1 | b13==2
+. replace business_at_home = . if b13==. | b13==-666
+. gen any_business_help = b26==1
+. replace any_business_help = . if b26==.
+. gen business_help_n = 0 if b26==2
+. replace business_help_n = 1 if b26c==2
+. replace business_help_n = 2 if b26c1==2
+. replace business_help_n = 3 if b26c2==2
+. replace business_help_n = 4 if b26c3==2
+. replace business_help_n = 5 if b26c3==1
+. gen business_help_women = 0
+. foreach x in b26a b26a_1 b26a_2 b26a_3 b26a_4 {
+. replace business_help_women = business_help_women + 1 if b26a==2
+. replace business_help_women = business_help_women + 1 if b26a_1==2
+. replace business_help_women = business_help_women + 1 if b26a_2==2
+. replace business_help_women = business_help_women + 1 if b26a_3==2
+. replace business_help_women = business_help_women + 1 if b26a_4==2
+. replace business_help_women = . if business_help_n==. | business_help_n==0
+. gen share_business_help_women = business_help_women/business_help_n
+. gen business_help_friends = 0
+. gen business_help_relatives = 0
+. gen business_help_friendrel = 0
+. gen business_help_assoc = 0
+. foreach x in b26b b26b_1 b26b_2 b26b_3 b26b_4 {
+. replace business_help_friends = business_help_friends + 1 if b26b==1
+. replace business_help_relatives = business_help_relatives + 1 if b26b==2
+. replace business_help_friendrel = business_help_friendrel + 1 if b26b==1 | b26b==2
+. replace business_help_assoc = business_help_assoc + 1 if b26b==3
+. replace business_help_friends = business_help_friends + 1 if b26b_1==1
+. replace business_help_relatives = business_help_relatives + 1 if b26b_1==2
+. replace business_help_friendrel = business_help_friendrel + 1 if b26b_1==1 | b26b_1==2
+. replace business_help_assoc = business_help_assoc + 1 if b26b_1==3
+. replace business_help_friends = business_help_friends + 1 if b26b_2==1
+. replace business_help_relatives = business_help_relatives + 1 if b26b_2==2
+. replace business_help_friendrel = business_help_friendrel + 1 if b26b_2==1 | b26b_2==2
+. replace business_help_assoc = business_help_assoc + 1 if b26b_2==3
+. replace business_help_friends = business_help_friends + 1 if b26b_3==1
+. replace business_help_relatives = business_help_relatives + 1 if b26b_3==2
+. replace business_help_friendrel = business_help_friendrel + 1 if b26b_3==1 | b26b_3==2
+. replace business_help_assoc = business_help_assoc + 1 if b26b_3==3
+. replace business_help_friends = business_help_friends + 1 if b26b_4==1
+. replace business_help_relatives = business_help_relatives + 1 if b26b_4==2
+. replace business_help_friendrel = business_help_friendrel + 1 if b26b_4==1 | b26b_4==2
+. replace business_help_assoc = business_help_assoc + 1 if b26b_4==3
+. replace business_help_friends = . if business_help_n==. | business_help_n==0
+. gen share_business_help_friends = business_help_friends/business_help_n
+. replace business_help_relatives = . if business_help_n==. | business_help_n==0
+. gen share_business_help_relatives = business_help_relatives/business_help_n
+. replace business_help_friendrel = . if business_help_n==. | business_help_n==0
+. gen share_business_help_friendrel = business_help_friendrel/business_help_n
+. replace business_help_assoc = . if business_help_n==. | business_help_n==0
+. gen share_business_help_assoc = business_help_assoc/business_help_n
+. gen business_association = b27 ==1
+. replace business_association = . if b27==.
+. gen meet_other_business =  b28==1
+. replace meet_other_business = . if b28==.
+. gen meet_other_business_freq = b28a
+. gen meet_other_business_n = b28b
+. replace meet_other_business_n = 0 if meet_other_business==0
+. gen meet_other_business_women =  b28b_1
+. gen meet_other_business_friendrel =  b28b_2
+. gen share_meet_business_women =  meet_other_business_women/meet_other_business_n
+. gen share_meet_business_friendrel =  meet_other_business_friendrel/meet_other_business_n
+. egen total_collab = rowtotal(b30a-b30g), missing
+line 139: egen total_collab = rowtotal(b30a-b30g), missing
+Parse error: option missing not allowed for this egen function
+r(198);
+. gen suppliers_n = b32a
+. gen suppliers_impt_n = 0
+. foreach x in b32b1 b32b1_2 b32b1_3 {
+. replace suppliers_impt_n = suppliers_impt_n + 1 if  b32b1!=""
+. replace suppliers_impt_n = suppliers_impt_n + 1 if  b32b1_2!=""
+. replace suppliers_impt_n = suppliers_impt_n + 1 if  b32b1_3!=""
+. gen suppliers_impt_women = 0
+. foreach x in b32b2 b32b2_2  b32b2_3 {
+. replace suppliers_impt_women = suppliers_impt_women + 1 if  b32b2==2
+. replace suppliers_impt_women = suppliers_impt_women + 1 if  b32b2_2==2
+. replace suppliers_impt_women = suppliers_impt_women + 1 if  b32b2_3==2
+. replace suppliers_impt_women = . if b32b2==. & b32b2_2==. & b32b2_3==.
+. gen share_suppliers_impt_women = suppliers_impt_women / suppliers_impt_n
+. gen any_female_suppliers = suppliers_impt_women>0 & suppliers_impt_women!=.
+. destring b32b5_2, replace
+b32b5_2: all characters numeric; replaced as byte
+(371 missing values generated)
+. gen suppliers_impt_friendrel = 0
+. foreach x in b32b5 b32b5_2 b32b5_3 {
+. replace suppliers_impt_friendrel = suppliers_impt_friendrel + 1 if  b32b5_1==1 | b32b5_2==1
+. replace suppliers_impt_friendrel = suppliers_impt_friendrel + 1 if  b32b5_2_1==1 | b32b5_2_2==1
+. replace suppliers_impt_friendrel = suppliers_impt_friendrel + 1 if  b32b5_3_1==1 | b32b5_3_2==1
+. gen share_suppliers_impt_friendrel = suppliers_impt_friendrel / suppliers_impt_n
+. gen clients_n = b32c
+. gen clients_impt_n = 0
+. foreach x in b32d1 b32d1_2 b32d1_3 {
+. replace clients_impt_n = clients_impt_n + 1 if  b32d1!=""
+. replace clients_impt_n = clients_impt_n + 1 if  b32d1_2!=""
+. replace clients_impt_n = clients_impt_n + 1 if  b32d1_3!=""
+. gen clients_impt_women = 0
+. foreach x in b32d2 b32d2_2  b32d2_3 {
+. replace clients_impt_women = clients_impt_women + 1 if  b32d2==2
+. replace clients_impt_women = clients_impt_women + 1 if  b32d2_2==2
+. replace clients_impt_women = clients_impt_women + 1 if  b32d2_3==2
+. replace clients_impt_women = . if b32d2==. & b32d2_2==. & b32d2_3==.
+. gen share_clients_impt_women = clients_impt_women / clients_impt_n
+. gen any_female_clients = clients_impt_women>0 & clients_impt_women!=.
+. destring  b32d5_2 ,replace
+b32d5_2: all characters numeric; replaced as byte
+(534 missing values generated)
+. gen clients_impt_friendrel = 0
+. foreach x in b32d5 b32d5_2 b32d5_3 {
+. replace clients_impt_friendrel = clients_impt_friendrel + 1 if  b32d5_1==1 | b32d5_2==1
+. replace clients_impt_friendrel = clients_impt_friendrel + 1 if  b32d5_2_1==1 | b32d5_2_2==1
+. replace clients_impt_friendrel = clients_impt_friendrel + 1 if  b32d5_3_1==1 | b32d5_3_2==1
+. gen share_clients_impt_friendrel = clients_impt_friendrel / clients_impt_n
+. gen hours_business = c1
+. gen hours_salary = c3a
+. gen hours_childcare = c3b
+. gen workers_wage = c4a
+. gen workers_casual = c4b
+. gen workers_unpaid = c4c
+. egen workers_total = rowtotal(workers_wage workers_casual workers_unpaid)
+. gen workers_female = c5a
+. gen workers_female_share = workers_female/workers_total
+. replace workers_female_share = . if workers_female_share >1 & workers_female_share!=.
+. gen export = d1 ==1
+. replace export =. if d1 ==.
+. gen sales_lastmonth = g4
+. gen logsales_lastmonth = log(sales_lastmonth)
+. gen profits_lastmonth = g6
+. local i = 1
+. local vars business_help_n meet_other_business meet_other_business_n business_association total_collab suppliers_n clients_n
+. foreach v of local vars {
+. gen aux_1 = business_help_n
+. local i = 1 + 1
+. gen aux_2 = meet_other_business
+. local i = 2 + 1
+. gen aux_3 = meet_other_business_n
+. local i = 3 + 1
+. gen aux_4 = business_association
+. local i = 4 + 1
+. gen aux_5 = total_collab
+line 261: 	gen aux_`i' = `v'
+Variable not found: total_collab
+r(111);
+. local i = 5 + 1
+. gen aux_6 = suppliers_n
+. local i = 6 + 1
+. gen aux_7 = clients_n
+. local i = 7 + 1
+. zindex aux_* , gen(business_network_index)
+line 266: zindex aux_* , gen(business_network_index)  
+Parse error at byte 0: error: unknown command 'zindex'. Did you mean 'binreg'?
+  zindex aux_* , gen(business_network_index)
+  ^
+r(199);
+. drop aux_*
+. local i = 1
+. local vars share_business_help_friendrel share_meet_business_friendrel share_suppliers_impt_friendrel
+. foreach v of local vars {
+. gen aux_1 = share_business_help_friendrel
+. local i = 1 + 1
+. gen aux_2 = share_meet_business_friendrel
+. local i = 2 + 1
+. gen aux_3 = share_suppliers_impt_friendrel
+. local i = 3 + 1
+. zindex aux_* , gen(business_network_friendrel_index)
+line 277: zindex aux_* , gen(business_network_friendrel_index)  
+Parse error at byte 0: error: unknown command 'zindex'. Did you mean 'binreg'?
+  zindex aux_* , gen(business_network_friendrel_index)
+  ^
+r(199);
+. drop aux_*
+. local i = 1
+. local vars share_business_help_women share_meet_business_women share_suppliers_impt_women share_clients_impt_women
+. foreach v of local vars {
+. gen aux_1 = share_business_help_women
+. local i = 1 + 1
+. gen aux_2 = share_meet_business_women
+. local i = 2 + 1
+. gen aux_3 = share_suppliers_impt_women
+. local i = 3 + 1
+. gen aux_4 = share_clients_impt_women
+. local i = 4 + 1
+. zindex aux_* , gen(business_network_female_index)
+line 288: zindex aux_* , gen(business_network_female_index)  
+Parse error at byte 0: error: unknown command 'zindex'. Did you mean 'binreg'?
+  zindex aux_* , gen(business_network_female_index)
+  ^
+r(199);
+. drop aux_*
+. save "/tmp/ghana-audit-zodxe58u/work/data/analysis/gender_gaps_ghana_clean.dta", replace
+file /tmp/ghana-audit-zodxe58u/work/data/analysis/gender_gaps_ghana_clean.dta saved
+. 
+end of do-file

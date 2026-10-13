@@ -1,0 +1,8 @@
+. adopath + "."
+Error: Parse error at byte 0: error: unknown command 'adopath'
+  adopath + "."
+  ^
+r(1);
+
+end of do-file
+r(1);

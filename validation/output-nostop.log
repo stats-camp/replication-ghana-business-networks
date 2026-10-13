@@ -1,0 +1,938 @@
+. global data "/tmp/ghana-audit-zodxe58u/work/data"
+
+. global output_tables "/tmp/ghana-audit-zodxe58u/work/output/tables"
+
+. global output_figures "/tmp/ghana-audit-zodxe58u/work/output/figures"
+
+. do "/tmp/ghana-audit-zodxe58u/work/code/output.do", nostop
+. use  "/tmp/ghana-audit-zodxe58u/work/data/analysis/gender_gaps_ghana_clean.dta", clear
+note: 1487 of 1487 observations contain at least one missing value
+note: source timestamp: 2026-10-13 13:21
+note: 97 variable label(s) loaded
+note: 37 value label set(s) loaded
+(207 vars, 1,487 obs)
+. local variables profit years_operation workers_total  business_at_home hours_business hours_salary hours_childcare product_aginput product_livestock product_crop product_cocoa product_forestry product_fish product_processed product_other married age collegedegree children business_primary_inc work_for_pay
+. lab var logsales_lastmonth "Log revenues last month (GHS)"
+. lab var profit "Profit last month (GHS)"
+. lab var years_operation "Years in operation"
+. lab var workers_total "Total workers (excl. owner)"
+. lab var workers_female_share "Female share of workers (excl. owner)"
+. lab var business_at_home "Business located at home"
+. lab var hours_business "Hours worked at business last week"
+. lab var hours_salary "Hours worked at wage employment last week"
+. lab var hours_childcare "Hours spent caregiving last week"
+. lab var product_aginput "\quad Agricultural inputs"
+. lab var product_livestock "\quad Livestock"
+. lab var product_crop "\quad Crops"
+. lab var product_cocoa "\quad Cocoa"
+. lab var product_forestry "\quad Forestry"
+. lab var product_fish "\quad Fishing"
+. lab var product_processed "\quad Agro-Processing"
+. lab var product_other "\quad Other"
+. lab var married "Married or in partnership"
+. lab var age "Age"
+. lab var collegedegree "College degree"
+. lab var children "Number of children"
+. lab var business_primary_inc "Primary income from business"
+. lab var work_for_pay "Work for pay"
+. eststo clear
+(eststo: all stored estimates cleared)
+. estpost sum profit years_operation workers_total  business_at_home hours_business hours_salary hours_childcare product_aginput product_livestock product_crop product_cocoa product_forestry product_fish product_processed product_other married age collegedegree children business_primary_inc work_for_pay
+line 38: estpost sum `variables'
+Parse error at byte 0: error: unknown command 'estpost'. Did you mean 'estout'?
+  estpost sum profit years_operation workers_total  business_at_home hours_business hours_salary hours_childcare product_aginput product_livestock product_crop product_cocoa product_forestry product_fish product_processed product_other married age collegedegree children business_primary_inc work_for_pay
+  ^
+r(199);
+. est store A
+line 39: est store A
+last estimates not found
+r(301);
+. estpost sum profit years_operation workers_total  business_at_home hours_business hours_salary hours_childcare product_aginput product_livestock product_crop product_cocoa product_forestry product_fish product_processed product_other married age collegedegree children business_primary_inc work_for_pay if female==0
+line 41: estpost sum `variables' if female==0
+Parse error at byte 0: error: unknown command 'estpost'. Did you mean 'estout'?
+  estpost sum profit years_operation workers_total  business_at_home hours_business hours_salary hours_childcare product_aginput product_livestock product_crop product_cocoa product_forestry product_fish product_processed product_other married age collegedegree children business_primary_inc work_for_pay if female==0
+  ^
+r(199);
+. est store B
+line 42: est store B
+last estimates not found
+r(301);
+. estpost sum profit years_operation workers_total  business_at_home hours_business hours_salary hours_childcare product_aginput product_livestock product_crop product_cocoa product_forestry product_fish product_processed product_other married age collegedegree children business_primary_inc work_for_pay if female==1
+line 44: estpost sum `variables' if female==1
+Parse error at byte 0: error: unknown command 'estpost'. Did you mean 'estout'?
+  estpost sum profit years_operation workers_total  business_at_home hours_business hours_salary hours_childcare product_aginput product_livestock product_crop product_cocoa product_forestry product_fish product_processed product_other married age collegedegree children business_primary_inc work_for_pay if female==1
+  ^
+r(199);
+. est store C
+line 45: est store C
+last estimates not found
+r(301);
+. estpost ttest profit years_operation workers_total  business_at_home hours_business hours_salary hours_childcare product_aginput product_livestock product_crop product_cocoa product_forestry product_fish product_processed product_other married age collegedegree children business_primary_inc work_for_pay, by(female)
+line 47: estpost ttest `variables', by(female) 
+Parse error at byte 0: error: unknown command 'estpost'. Did you mean 'estout'?
+  estpost ttest profit years_operation workers_total  business_at_home hours_business hours_salary hours_childcare product_aginput product_livestock product_crop product_cocoa product_forestry product_fish product_processed product_other married age collegedegree children business_primary_inc work_for_pay, by(female)
+  ^
+r(199);
+. est store D
+line 48: est store D
+last estimates not found
+r(301);
+. esttab A B C D using "/tmp/ghana-audit-zodxe58u/work/output/tables/Table1.tex", replace cells("mean(pattern(1 1 1 0) fmt(2)) b(star pattern(0 0 0 1) fmt(2)) p(pattern(0 0 0 1) par fmt(2))" )  star(* .10 * .05 ** .01)   label nonum collabels("Mean" "\(\beta\)" "\(p\)-value") booktabs wide mtitles("All" "Male" "Female" "Difference") refcat(product_aginput "Products", nolabel)
+line 52: esttab A B C D using "${output_tables}/Table1.tex", replace cells("mean(pattern(1 1 1 0) fmt(2)) b(star pattern(0 0 0 1) fmt(2)) p(pattern(0 0 0 1) par fmt(2))" )  star(* .10 * .05 ** .01)  ///
+ label nonum collabels("Mean" "\(\beta\)" "\(p\)-value") booktabs wide mtitles("All" "Male" "Female" "Difference") refcat(product_aginput "Products", nolabel)
+Parse error at byte 15: error: esttab does not support the 'using' clause
+  esttab A B C D using "/tmp/ghana-audit-zodxe58u/work/output/tables/Table1.tex", replace cells("mean(pattern(1 1 1 0) fmt(2)) b(star pattern(0 0 0 1) fmt(2)) p(pattern(0 0 0 1) par fmt(2))" )  star(* .10 * .05 ** .01)   label nonum collabels("Mean" "\(\beta\)" "\(p\)-value") booktabs wide mtitles("All" "Male" "Female" "Difference") refcat(product_aginput "Products", nolabel)
+                 ^
+r(198);
+. use  "/tmp/ghana-audit-zodxe58u/work/data/analysis/gender_gaps_ghana_clean.dta", clear
+note: 1487 of 1487 observations contain at least one missing value
+note: source timestamp: 2026-10-13 13:21
+note: 97 variable label(s) loaded
+note: 37 value label set(s) loaded
+(207 vars, 1,487 obs)
+. local i = 1
+. foreach y in business_help_n meet_other_business meet_other_business_n business_association total_collab suppliers_n clients_n {
+. else if "`y'"=="business_help_n" {
+. local ylabel "ylabel(0(.2).8)"
+. matrix results_1 = J(1,3,.)
+. matrix female_1 = J(1,3,.)
+. matrix coln female_1 = mean ll95 ul95
+line 79: 	matrix coln female_`i' = mean ll95 ul95
+invalid syntax
+r(198);
+. matrix male_1 = J(1,3,.)
+. matrix coln male_1 = mean ll95 ul95
+line 81: 	matrix coln male_`i' = mean ll95 ul95
+invalid syntax
+r(198);
+. reg business_help_n female,r
+
+Linear regression                               Number of obs     =      1,436
+                                                F(1, 1434)        =       4.67
+                                                Prob > F          =     0.0309
+                                                R-squared         =     0.0025
+                                                Root MSE          =     .81564
+
+--------------------------------------------------------------------------------
+             |               Robust
+business_h~n | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------+------------------------------------------------------------------
+      female |    -.1060425   .0490751    -2.16   0.031    -.2023092   -.0097757
+       _cons |     .7144075   .0245679    29.08   0.000     .6662147    .7626003
+--------------------------------------------------------------------------------
+. matrix female_1[1,1] = _b[_cons]+_b[female], _b[_cons]+_b[female]-1.96*_se[female], _b[_cons]+_b[female]+1.96*_se[female]
+line 86: 	matrix female_`i'[1,1] = _b[_cons]+_b[female], _b[_cons]+_b[female]-1.96*_se[female], _b[_cons]+_b[female]+1.96*_se[female]
+invalid syntax
+r(198);
+. matrix male_1[1,1] = _b[_cons]
+. matrix results_1[1,1] = _b[female], _b[female]-1.96*_se[female], _b[female]+1.96*_se[female]
+line 88: 	matrix results_`i'[1,1] = _b[female], _b[female]-1.96*_se[female], _b[female]+1.96*_se[female]
+invalid syntax
+r(198);
+. local i = 1 + 1
+. else if "`y'"=="meet_other_business" {
+. local ylabel "ylabel(0(.1).4)"
+. matrix results_2 = J(1,3,.)
+. matrix female_2 = J(1,3,.)
+. matrix coln female_2 = mean ll95 ul95
+line 79: 	matrix coln female_`i' = mean ll95 ul95
+invalid syntax
+r(198);
+. matrix male_2 = J(1,3,.)
+. matrix coln male_2 = mean ll95 ul95
+line 81: 	matrix coln male_`i' = mean ll95 ul95
+invalid syntax
+r(198);
+. reg meet_other_business female,r
+
+Linear regression                               Number of obs     =      1,436
+                                                F(1, 1434)        =       8.10
+                                                Prob > F          =     0.0045
+                                                R-squared         =     0.0052
+                                                Root MSE          =     .48772
+
+--------------------------------------------------------------------------------
+             |               Robust
+meet_other~s | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------+------------------------------------------------------------------
+      female |    -.0915206   .0321612    -2.85   0.004    -.1546087   -.0284324
+       _cons |     .4109122   .0143753    28.58   0.000     .3827132    .4391111
+--------------------------------------------------------------------------------
+. matrix female_2[1,1] = _b[_cons]+_b[female], _b[_cons]+_b[female]-1.96*_se[female], _b[_cons]+_b[female]+1.96*_se[female]
+line 86: 	matrix female_`i'[1,1] = _b[_cons]+_b[female], _b[_cons]+_b[female]-1.96*_se[female], _b[_cons]+_b[female]+1.96*_se[female]
+invalid syntax
+r(198);
+. matrix male_2[1,1] = _b[_cons]
+. matrix results_2[1,1] = _b[female], _b[female]-1.96*_se[female], _b[female]+1.96*_se[female]
+line 88: 	matrix results_`i'[1,1] = _b[female], _b[female]-1.96*_se[female], _b[female]+1.96*_se[female]
+invalid syntax
+r(198);
+. local i = 2 + 1
+. if "`y'"=="meet_other_business_n" {
+. local ylabel "ylabel(0(.5)2)"
+. matrix results_3 = J(1,3,.)
+. matrix female_3 = J(1,3,.)
+. matrix coln female_3 = mean ll95 ul95
+line 79: 	matrix coln female_`i' = mean ll95 ul95
+invalid syntax
+r(198);
+. matrix male_3 = J(1,3,.)
+. matrix coln male_3 = mean ll95 ul95
+line 81: 	matrix coln male_`i' = mean ll95 ul95
+invalid syntax
+r(198);
+. reg meet_other_business_n female,r
+
+Linear regression                               Number of obs     =      1,431
+                                                F(1, 1429)        =       3.69
+                                                Prob > F          =     0.0551
+                                                R-squared         =     0.0007
+                                                Root MSE          =     11.343
+
+--------------------------------------------------------------------------------
+             |               Robust
+meet_other~n | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------+------------------------------------------------------------------
+      female |     -.779191   .4058367    -1.92   0.055    -1.575291    .0169087
+       _cons |    2.0111301   .3651871     5.51   0.000      1.29477     2.72749
+--------------------------------------------------------------------------------
+. matrix female_3[1,1] = _b[_cons]+_b[female], _b[_cons]+_b[female]-1.96*_se[female], _b[_cons]+_b[female]+1.96*_se[female]
+line 86: 	matrix female_`i'[1,1] = _b[_cons]+_b[female], _b[_cons]+_b[female]-1.96*_se[female], _b[_cons]+_b[female]+1.96*_se[female]
+invalid syntax
+r(198);
+. matrix male_3[1,1] = _b[_cons]
+. matrix results_3[1,1] = _b[female], _b[female]-1.96*_se[female], _b[female]+1.96*_se[female]
+line 88: 	matrix results_`i'[1,1] = _b[female], _b[female]-1.96*_se[female], _b[female]+1.96*_se[female]
+invalid syntax
+r(198);
+. local i = 3 + 1
+. else if "`y'"=="business_association" {
+. local ylabel "ylabel(0(.05).2)"
+. matrix results_4 = J(1,3,.)
+. matrix female_4 = J(1,3,.)
+. matrix coln female_4 = mean ll95 ul95
+line 79: 	matrix coln female_`i' = mean ll95 ul95
+invalid syntax
+r(198);
+. matrix male_4 = J(1,3,.)
+. matrix coln male_4 = mean ll95 ul95
+line 81: 	matrix coln male_`i' = mean ll95 ul95
+invalid syntax
+r(198);
+. reg business_association female,r
+
+Linear regression                               Number of obs     =      1,436
+                                                F(1, 1434)        =       2.31
+                                                Prob > F          =     0.1286
+                                                R-squared         =     0.0014
+                                                Root MSE          =     .38332
+
+--------------------------------------------------------------------------------
+             |               Robust
+business_a~n | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------+------------------------------------------------------------------
+      female |    -.0375593   .0246996    -1.52   0.129    -.0860104    .0108919
+       _cons |     .1858483   .0113654    16.35   0.000     .1635536    .2081429
+--------------------------------------------------------------------------------
+. matrix female_4[1,1] = _b[_cons]+_b[female], _b[_cons]+_b[female]-1.96*_se[female], _b[_cons]+_b[female]+1.96*_se[female]
+line 86: 	matrix female_`i'[1,1] = _b[_cons]+_b[female], _b[_cons]+_b[female]-1.96*_se[female], _b[_cons]+_b[female]+1.96*_se[female]
+invalid syntax
+r(198);
+. matrix male_4[1,1] = _b[_cons]
+. matrix results_4[1,1] = _b[female], _b[female]-1.96*_se[female], _b[female]+1.96*_se[female]
+line 88: 	matrix results_`i'[1,1] = _b[female], _b[female]-1.96*_se[female], _b[female]+1.96*_se[female]
+invalid syntax
+r(198);
+. local i = 4 + 1
+. else if "`y'"=="total_collab" {
+. local ylabel "ylabel(0(1)7)"
+. matrix results_5 = J(1,3,.)
+. matrix female_5 = J(1,3,.)
+. matrix coln female_5 = mean ll95 ul95
+line 79: 	matrix coln female_`i' = mean ll95 ul95
+invalid syntax
+r(198);
+. matrix male_5 = J(1,3,.)
+. matrix coln male_5 = mean ll95 ul95
+line 81: 	matrix coln male_`i' = mean ll95 ul95
+invalid syntax
+r(198);
+. reg total_collab female,r
+line 83: 	reg `y' female,r
+Variable not found: total_collab
+r(111);
+. matrix female_5[1,1] = _b[_cons]+_b[female], _b[_cons]+_b[female]-1.96*_se[female], _b[_cons]+_b[female]+1.96*_se[female]
+line 86: 	matrix female_`i'[1,1] = _b[_cons]+_b[female], _b[_cons]+_b[female]-1.96*_se[female], _b[_cons]+_b[female]+1.96*_se[female]
+invalid syntax
+r(198);
+. matrix male_5[1,1] = _b[_cons]
+. matrix results_5[1,1] = _b[female], _b[female]-1.96*_se[female], _b[female]+1.96*_se[female]
+line 88: 	matrix results_`i'[1,1] = _b[female], _b[female]-1.96*_se[female], _b[female]+1.96*_se[female]
+invalid syntax
+r(198);
+. local i = 5 + 1
+. matrix results_6 = J(1,3,.)
+. matrix female_6 = J(1,3,.)
+. matrix coln female_6 = mean ll95 ul95
+line 79: 	matrix coln female_`i' = mean ll95 ul95
+invalid syntax
+r(198);
+. matrix male_6 = J(1,3,.)
+. matrix coln male_6 = mean ll95 ul95
+line 81: 	matrix coln male_`i' = mean ll95 ul95
+invalid syntax
+r(198);
+. reg suppliers_n female,r
+
+Linear regression                               Number of obs     =      1,430
+                                                F(1, 1428)        =       0.07
+                                                Prob > F          =     0.7977
+                                                R-squared         =     0.0001
+                                                Root MSE          =     1.4879
+
+--------------------------------------------------------------------------------
+             |               Robust
+ suppliers_n | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------+------------------------------------------------------------------
+      female |     .0280443   .1093928     0.26   0.798    -.1865435    .2426321
+       _cons |    1.4032534   .0425378    32.99   0.000      1.31981    1.486697
+--------------------------------------------------------------------------------
+. matrix female_6[1,1] = _b[_cons]+_b[female], _b[_cons]+_b[female]-1.96*_se[female], _b[_cons]+_b[female]+1.96*_se[female]
+line 86: 	matrix female_`i'[1,1] = _b[_cons]+_b[female], _b[_cons]+_b[female]-1.96*_se[female], _b[_cons]+_b[female]+1.96*_se[female]
+invalid syntax
+r(198);
+. matrix male_6[1,1] = _b[_cons]
+. matrix results_6[1,1] = _b[female], _b[female]-1.96*_se[female], _b[female]+1.96*_se[female]
+line 88: 	matrix results_`i'[1,1] = _b[female], _b[female]-1.96*_se[female], _b[female]+1.96*_se[female]
+invalid syntax
+r(198);
+. local i = 6 + 1
+. matrix results_7 = J(1,3,.)
+. matrix female_7 = J(1,3,.)
+. matrix coln female_7 = mean ll95 ul95
+line 79: 	matrix coln female_`i' = mean ll95 ul95
+invalid syntax
+r(198);
+. matrix male_7 = J(1,3,.)
+. matrix coln male_7 = mean ll95 ul95
+line 81: 	matrix coln male_`i' = mean ll95 ul95
+invalid syntax
+r(198);
+. reg clients_n female,r
+
+Linear regression                               Number of obs     =      1,428
+                                                F(1, 1426)        =       1.42
+                                                Prob > F          =     0.2332
+                                                R-squared         =     0.0008
+                                                Root MSE          =     5.7372
+
+--------------------------------------------------------------------------------
+             |               Robust
+   clients_n | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------+------------------------------------------------------------------
+      female |     .4194622   .3516989     1.19   0.233    -.2704405    1.109365
+       _cons |    2.5380667   .1725845    14.71   0.000      2.19952    2.876613
+--------------------------------------------------------------------------------
+. matrix female_7[1,1] = _b[_cons]+_b[female], _b[_cons]+_b[female]-1.96*_se[female], _b[_cons]+_b[female]+1.96*_se[female]
+line 86: 	matrix female_`i'[1,1] = _b[_cons]+_b[female], _b[_cons]+_b[female]-1.96*_se[female], _b[_cons]+_b[female]+1.96*_se[female]
+invalid syntax
+r(198);
+. matrix male_7[1,1] = _b[_cons]
+. matrix results_7[1,1] = _b[female], _b[female]-1.96*_se[female], _b[female]+1.96*_se[female]
+line 88: 	matrix results_`i'[1,1] = _b[female], _b[female]-1.96*_se[female], _b[female]+1.96*_se[female]
+invalid syntax
+r(198);
+. local i = 7 + 1
+. coefplot 	(matrix(male_1[,1]), noci label(Male) rename(r1="# Business Owners for Advice") offset(0) color(navy)) (matrix(female_1[,1]), ci((female_1[,2] female_1[,3])) color(maroon) label("Female") rename(r1="# Business Owners for Advice") offset(-0.3)) 	(matrix(male_3[,1]), noci nokey rename(r1="# Business Owners Meet Regularly") offset(0) color(navy)) (matrix(female_3[,1]), ci((female_3[,2] female_3[,3])) color(maroon) nokey rename(r1="# Business Owners Meet Regularly") offset(-0.3)) 	(matrix(male_5[,1]), noci nokey rename(r1="# Business Collaborations") offset(0) color(navy)) (matrix(female_5[,1]), ci((female_5[,2] female_5[,3])) color(maroon) nokey rename(r1="# Business Collaborations") offset(-0.3)) 	(matrix(male_6[,1]), noci nokey rename(r1="# Suppliers") offset(0) color(navy)) (matrix(female_6[,1]), ci((female_6[,2] female_6[,3])) color(maroon) nokey rename(r1="# Suppliers") offset(-0.3)) 	(matrix(male_7[,1]), noci nokey rename(r1="# Clients") offset(0) color(navy)) (matrix(female_7[,1]), ci((female_7[,2] female_7[,3])) color(maroon) nokey rename(r1="# Clients") offset(-0.3)) , 	 ytitle("") xline(0 ,lcolor(gs5)) 	 recast(bar) barwidth(0.25) fcolor(*.75) citop ciopts(recast(rcap) color(gs8)) 	 base omitted  	 mlabel mlabcolor(black) mlabp(2) mlabg(*1.2) mlabf(%9.2f)  	 legend(position(6)) 	 plotregion(fcolor(white)) graphregion(fcolor(white) ifcolor(white) color(white) icolor(white)) bgcolor(white)  legend(rows(1)) grid(glcolor(gs14) glpattern(dash))
+line 94: coefplot ///
+	(matrix(male_1[,1]), noci label(Male) rename(r1="# Business Owners for Advice") offset(0) color(navy)) (matrix(female_1[,1]), ci((female_1[,2] female_1[,3])) color(maroon) label("Female") rename(r1="# Business Owners for Advice") offset(-0.3)) ///
+	(matrix(male_3[,1]), noci nokey rename(r1="# Business Owners Meet Regularly") offset(0) color(navy)) (matrix(female_3[,1]), ci((female_3[,2] female_3[,3])) color(maroon) nokey rename(r1="# Business Owners Meet Regularly") offset(-0.3)) ///
+	(matrix(male_5[,1]), noci nokey rename(r1="# Business Collaborations") offset(0) color(navy)) (matrix(female_5[,1]), ci((female_5[,2] female_5[,3])) color(maroon) nokey rename(r1="# Business Collaborations") offset(-0.3)) ///
+	(matrix(male_6[,1]), noci nokey rename(r1="# Suppliers") offset(0) color(navy)) (matrix(female_6[,1]), ci((female_6[,2] female_6[,3])) color(maroon) nokey rename(r1="# Suppliers") offset(-0.3)) ///
+	(matrix(male_7[,1]), noci nokey rename(r1="# Clients") offset(0) color(navy)) (matrix(female_7[,1]), ci((female_7[,2] female_7[,3])) color(maroon) nokey rename(r1="# Clients") offset(-0.3)) , ///
+	 ytitle("") xline(0 ,lcolor(gs5)) ///
+	 recast(bar) barwidth(0.25) fcolor(*.75) citop ciopts(recast(rcap) color(gs8)) ///
+	 base omitted  ///
+	 mlabel mlabcolor(black) mlabp(2) mlabg(*1.2) mlabf(%9.2f)  ///
+	 legend(position(6)) ///
+	 plotregion(fcolor(white)) graphregion(fcolor(white) ifcolor(white) color(white) icolor(white)) bgcolor(white)  legend(rows(1)) grid(glcolor(gs14) glpattern(dash)) 
+Parse error: option rename() not allowed
+r(198);
+. graph export "/tmp/ghana-audit-zodxe58u/work/output/figures/Figure1a.eps",replace
+line 106: 	 graph export "${output_figures}/Figure1a.eps",replace
+no Graph window open; create or display a graph before using graph export
+r(601);
+. local i = 1
+. foreach y in share_business_help_women share_meet_business_women share_suppliers_impt_women share_clients_impt_women {
+. matrix results_1 = J(1,3,.)
+. matrix coln results_1 = mean ll95 ul95
+line 111: 	matrix coln results_`i' = mean ll95 ul95
+invalid syntax
+r(198);
+. reg share_business_help_women female,r
+
+Linear regression                               Number of obs     =        718
+                                                F(1, 716)         =       9.27
+                                                Prob > F          =     0.0024
+                                                R-squared         =     0.0219
+                                                Root MSE          =     .27213
+
+--------------------------------------------------------------------------------
+             |               Robust
+share_busi~n | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------+------------------------------------------------------------------
+      female |     .1051673    .034544     3.04   0.002     .0373477    .1729869
+       _cons |     .0882169   .0099929     8.83   0.000      .068598    .1078358
+--------------------------------------------------------------------------------
+. matrix results_1[1,1] = _b[female], _b[female]-1.96*_se[female], _b[female]+1.96*_se[female]
+line 114: 	matrix results_`i'[1,1] = _b[female], _b[female]-1.96*_se[female], _b[female]+1.96*_se[female]
+invalid syntax
+r(198);
+. local i = 1 + 1
+. matrix results_2 = J(1,3,.)
+. matrix coln results_2 = mean ll95 ul95
+line 111: 	matrix coln results_`i' = mean ll95 ul95
+invalid syntax
+r(198);
+. reg share_meet_business_women female,r
+
+Linear regression                               Number of obs     =        560
+                                                F(1, 558)         =      70.45
+                                                Prob > F          =     0.0000
+                                                R-squared         =     0.1624
+                                                Root MSE          =     .28474
+
+--------------------------------------------------------------------------------
+             |               Robust
+share_meet~n | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------+------------------------------------------------------------------
+      female |      .350447   .0417527     8.39   0.000     .2684352    .4324588
+       _cons |      .189604   .0122799    15.44   0.000     .1654835    .2137245
+--------------------------------------------------------------------------------
+. matrix results_2[1,1] = _b[female], _b[female]-1.96*_se[female], _b[female]+1.96*_se[female]
+line 114: 	matrix results_`i'[1,1] = _b[female], _b[female]-1.96*_se[female], _b[female]+1.96*_se[female]
+invalid syntax
+r(198);
+. local i = 2 + 1
+. matrix results_3 = J(1,3,.)
+. matrix coln results_3 = mean ll95 ul95
+line 111: 	matrix coln results_`i' = mean ll95 ul95
+invalid syntax
+r(198);
+. reg share_suppliers_impt_women female,r
+
+Linear regression                               Number of obs     =      1,104
+                                                F(1, 1102)        =      14.59
+                                                Prob > F          =     0.0001
+                                                R-squared         =     0.0160
+                                                Root MSE          =     .36621
+
+--------------------------------------------------------------------------------
+             |               Robust
+share_supp~n | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------+------------------------------------------------------------------
+      female |     .1204418   .0315303     3.82   0.000     .0585755    .1823081
+       _cons |     .1981132   .0117884    16.81   0.000     .1749829    .2212435
+--------------------------------------------------------------------------------
+. matrix results_3[1,1] = _b[female], _b[female]-1.96*_se[female], _b[female]+1.96*_se[female]
+line 114: 	matrix results_`i'[1,1] = _b[female], _b[female]-1.96*_se[female], _b[female]+1.96*_se[female]
+invalid syntax
+r(198);
+. local i = 3 + 1
+. matrix results_4 = J(1,3,.)
+. matrix coln results_4 = mean ll95 ul95
+line 111: 	matrix coln results_`i' = mean ll95 ul95
+invalid syntax
+r(198);
+. reg share_clients_impt_women female,r
+
+Linear regression                               Number of obs     =        939
+                                                F(1, 937)         =      18.78
+                                                Prob > F          =     0.0000
+                                                R-squared         =     0.0172
+                                                Root MSE          =     .41404
+
+--------------------------------------------------------------------------------
+             |               Robust
+share_clie~n | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------+------------------------------------------------------------------
+      female |     .1432639   .0330567     4.33   0.000     .0783901    .2081376
+       _cons |     .5776197   .0151524    38.12   0.000      .547883    .6073563
+--------------------------------------------------------------------------------
+. matrix results_4[1,1] = _b[female], _b[female]-1.96*_se[female], _b[female]+1.96*_se[female]
+line 114: 	matrix results_`i'[1,1] = _b[female], _b[female]-1.96*_se[female], _b[female]+1.96*_se[female]
+invalid syntax
+r(198);
+. local i = 4 + 1
+. local i = 1
+. foreach y in share_business_help_friendrel share_meet_business_friendrel share_suppliers_impt_friendrel share_clients_impt_friendrel {
+. matrix results2_1 = J(1,3,.)
+. matrix coln results2_1 = mean ll95 ul95
+line 121: 	matrix coln results2_`i' = mean ll95 ul95
+invalid syntax
+r(198);
+. reg share_business_help_friendrel female,r
+
+Linear regression                               Number of obs     =        718
+                                                F(1, 716)         =       9.06
+                                                Prob > F          =     0.0027
+                                                R-squared         =     0.0104
+                                                Root MSE          =     .39868
+
+--------------------------------------------------------------------------------
+             |               Robust
+share_busi~l | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------+------------------------------------------------------------------
+      female |     .1054352   .0350313     3.01   0.003     .0366588    .1742116
+       _cons |     .7317149   .0168593    43.40   0.000     .6986153    .7648146
+--------------------------------------------------------------------------------
+. matrix results2_1[1,1] = _b[female], _b[female]-1.96*_se[female], _b[female]+1.96*_se[female]
+line 124: 	matrix results2_`i'[1,1] = _b[female], _b[female]-1.96*_se[female], _b[female]+1.96*_se[female]
+invalid syntax
+r(198);
+. local i = 1 + 1
+. matrix results2_2 = J(1,3,.)
+. matrix coln results2_2 = mean ll95 ul95
+line 121: 	matrix coln results2_`i' = mean ll95 ul95
+invalid syntax
+r(198);
+. reg share_meet_business_friendrel female,r
+
+Linear regression                               Number of obs     =        561
+                                                F(1, 559)         =       0.09
+                                                Prob > F          =     0.7613
+                                                R-squared         =     0.0002
+                                                Root MSE          =     .41879
+
+--------------------------------------------------------------------------------
+             |               Robust
+share_meet~l | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------+------------------------------------------------------------------
+      female |    -.0153461   .0504952    -0.30   0.761    -.1145297    .0838375
+       _cons |     .6204907   .0190961    32.49   0.000     .5829818    .6579995
+--------------------------------------------------------------------------------
+. matrix results2_2[1,1] = _b[female], _b[female]-1.96*_se[female], _b[female]+1.96*_se[female]
+line 124: 	matrix results2_`i'[1,1] = _b[female], _b[female]-1.96*_se[female], _b[female]+1.96*_se[female]
+invalid syntax
+r(198);
+. local i = 2 + 1
+. matrix results2_3 = J(1,3,.)
+. matrix coln results2_3 = mean ll95 ul95
+line 121: 	matrix coln results2_`i' = mean ll95 ul95
+invalid syntax
+r(198);
+. reg share_suppliers_impt_friendrel female,r
+
+Linear regression                               Number of obs     =      1,111
+                                                F(1, 1109)        =       1.68
+                                                Prob > F          =     0.1945
+                                                R-squared         =     0.0015
+                                                Root MSE          =     .44096
+
+--------------------------------------------------------------------------------
+             |               Robust
+share_supp~l | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------+------------------------------------------------------------------
+      female |     .0436306   .0336124     1.30   0.195    -.0223205    .1095817
+       _cons |     .6624449   .0147095    45.04   0.000     .6335834    .6913065
+--------------------------------------------------------------------------------
+. matrix results2_3[1,1] = _b[female], _b[female]-1.96*_se[female], _b[female]+1.96*_se[female]
+line 124: 	matrix results2_`i'[1,1] = _b[female], _b[female]-1.96*_se[female], _b[female]+1.96*_se[female]
+invalid syntax
+r(198);
+. local i = 3 + 1
+. matrix results2_4 = J(1,3,.)
+. matrix coln results2_4 = mean ll95 ul95
+line 121: 	matrix coln results2_`i' = mean ll95 ul95
+invalid syntax
+r(198);
+. reg share_clients_impt_friendrel female,r
+
+Linear regression                               Number of obs     =        946
+                                                F(1, 944)         =       0.00
+                                                Prob > F          =     0.9615
+                                                R-squared         =     0.0000
+                                                Root MSE          =      .4205
+
+--------------------------------------------------------------------------------
+             |               Robust
+share_clie~l | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------+------------------------------------------------------------------
+      female |    -.0017078   .0353459    -0.05   0.961    -.0710734    .0676579
+       _cons |     .6593924   .0151241    43.60   0.000     .6297116    .6890731
+--------------------------------------------------------------------------------
+. matrix results2_4[1,1] = _b[female], _b[female]-1.96*_se[female], _b[female]+1.96*_se[female]
+line 124: 	matrix results2_`i'[1,1] = _b[female], _b[female]-1.96*_se[female], _b[female]+1.96*_se[female]
+invalid syntax
+r(198);
+. local i = 4 + 1
+. coefplot 	(matrix(results_1[,1]), ci((results_1[,2] results_1[,3])) rename(r1="Business Owners for Advice") offset(0) label(" Female Share") 	 mcolor(navy) ciopts(color(navy)) mlabsize(medium)) 	 (matrix(results2_1[,1]), ci((results2_1[,2] results2_1[,3])) rename(r1="Business Owners for Advice") offset(-0.3) label("Friends or Relatives Share") 	 mcolor(navy*.50) ciopts(color(navy*.50)) mlabsize(medium)) 	 (matrix(results_2[,1]), ci((results_2[,2] results_2[,3])) rename(r1="Business Owners Meet Regularly") offset(0) nokey 	 mcolor(navy) ciopts(color(navy)) mlabsize(medium)) 	 (matrix(results2_2[,1]), ci((results2_2[,2] results2_2[,3])) rename(r1="Business Owners Meet Regularly") nokey offset(-0.3) 	 mcolor(navy*.50) ciopts(color(navy*.50)) mlabsize(medium)) 	 (matrix(results_3[,1]), ci((results_3[,2] results_3[,3])) rename(r1="Suppliers") offset(0) nokey 	 mcolor(navy) ciopts(color(navy)) mlabsize(medium)) 	 (matrix(results2_3[,1]), ci((results2_3[,2] results2_3[,3])) rename(r1="Suppliers") offset(-0.3) nokey 	 mcolor(navy*.50) ciopts(color(navy*.50)) mlabsize(medium)) 	 (matrix(results_4[,1]), ci((results_4[,2] results_4[,3])) rename(r1="Business Clients") offset(0) nokey 	 mcolor(navy) ciopts(color(navy)) mlabsize(medium)) 	 (matrix(results2_4[,1]), ci((results2_4[,2] results2_4[,3])) rename(r1="Business Clients") offset(-0.3) nokey 	 mcolor(navy*.50) ciopts(color(navy*.50)) mlabsize(medium)) , 	 ytitle("") xline(0 ,lcolor(gs5)) 	 base omitted 	 legend(position(6)) 	 plotregion(fcolor(white)) graphregion(fcolor(white) ifcolor(white) color(white) icolor(white)) bgcolor(white)  legend(rows(1)) xlabel(-.2(.2).6) grid(glcolor(gs14) glpattern(dash))
+line 129: coefplot ///
+	(matrix(results_1[,1]), ci((results_1[,2] results_1[,3])) rename(r1="Business Owners for Advice") offset(0) label(" Female Share") ///
+	 mcolor(navy) ciopts(color(navy)) mlabsize(medium)) ///
+	 (matrix(results2_1[,1]), ci((results2_1[,2] results2_1[,3])) rename(r1="Business Owners for Advice") offset(-0.3) label("Friends or Relatives Share") ///
+	 mcolor(navy*.50) ciopts(color(navy*.50)) mlabsize(medium)) ///
+	 (matrix(results_2[,1]), ci((results_2[,2] results_2[,3])) rename(r1="Business Owners Meet Regularly") offset(0) nokey ///
+	 mcolor(navy) ciopts(color(navy)) mlabsize(medium)) ///
+	 (matrix(results2_2[,1]), ci((results2_2[,2] results2_2[,3])) rename(r1="Business Owners Meet Regularly") nokey offset(-0.3) ///
+	 mcolor(navy*.50) ciopts(color(navy*.50)) mlabsize(medium)) ///
+	 (matrix(results_3[,1]), ci((results_3[,2] results_3[,3])) rename(r1="Suppliers") offset(0) nokey ///
+	 mcolor(navy) ciopts(color(navy)) mlabsize(medium)) ///
+	 (matrix(results2_3[,1]), ci((results2_3[,2] results2_3[,3])) rename(r1="Suppliers") offset(-0.3) nokey ///
+	 mcolor(navy*.50) ciopts(color(navy*.50)) mlabsize(medium)) ///
+	 (matrix(results_4[,1]), ci((results_4[,2] results_4[,3])) rename(r1="Business Clients") offset(0) nokey ///
+	 mcolor(navy) ciopts(color(navy)) mlabsize(medium)) ///
+	 (matrix(results2_4[,1]), ci((results2_4[,2] results2_4[,3])) rename(r1="Business Clients") offset(-0.3) nokey ///
+	 mcolor(navy*.50) ciopts(color(navy*.50)) mlabsize(medium)) , ///
+	 ytitle("") xline(0 ,lcolor(gs5)) ///
+	 base omitted ///
+	 legend(position(6)) ///
+	 plotregion(fcolor(white)) graphregion(fcolor(white) ifcolor(white) color(white) icolor(white)) bgcolor(white)  legend(rows(1)) xlabel(-.2(.2).6) grid(glcolor(gs14) glpattern(dash)) 
+Parse error: option ci() not allowed
+r(198);
+. graph export "/tmp/ghana-audit-zodxe58u/work/output/figures/Figure1b.eps",replace
+line 150: 	 graph export "${output_figures}/Figure1b.eps",replace
+no Graph window open; create or display a graph before using graph export
+r(601);
+. gen m_business_network_female_index = mi(business_network_female_index)
+line 153: gen m_business_network_female_index = mi(business_network_female_index)
+Variable not found: business_network_female_index
+r(111);
+. replace business_network_female_index = -9 if mi(business_network_female_index)
+line 154: replace business_network_female_index = -9 if mi(business_network_female_index) 
+Variable not found: business_network_female_index
+r(111);
+. gen m_business_network_friendrel = mi(business_network_friendrel_index)
+line 156: gen m_business_network_friendrel = mi(business_network_friendrel_index)
+Variable not found: business_network_friendrel_index
+r(111);
+. replace business_network_friendrel_index = -9 if mi(business_network_friendrel_index)
+line 157: replace business_network_friendrel_index = -9 if mi(business_network_friendrel_index)
+Variable not found: business_network_friendrel_index
+r(111);
+. gen m_business_network_index = mi(business_network_index)
+line 159: gen m_business_network_index = mi(business_network_index)
+Variable not found: business_network_index
+r(111);
+. replace business_network_index = -9 if mi(business_network_index)
+line 160: replace business_network_index = -9 if mi(business_network_index)
+Variable not found: business_network_index
+r(111);
+. lab var business_network_index "Networking Index"
+line 163: lab var business_network_index "Networking Index"
+Variable not found: business_network_index
+r(111);
+. lab var business_network_female_index "Female Networking Index"
+line 164: lab var business_network_female_index "Female Networking Index"
+Variable not found: business_network_female_index
+r(111);
+. lab var business_network_friendrel_index "Friends/Relatives Networking Index"
+line 165: lab var business_network_friendrel_index "Friends/Relatives Networking Index"
+Variable not found: business_network_friendrel_index
+r(111);
+. local controls age years_operation business_primary_inc
+. local controls2 product_aginput product_livestock product_crop product_cocoa product_forestry product_fish product_processed
+. lab var female "Female"
+. eststo clear
+(eststo: all stored estimates cleared)
+. eststo: reg profit female age years_operation business_primary_inc,r
+
+Linear regression                               Number of obs     =      1,398
+                                                F(4, 1393)        =       2.35
+                                                Prob > F          =     0.0527
+                                                R-squared         =     0.0037
+                                                Root MSE          =     6170.3
+
+--------------------------------------------------------------------------------
+             |               Robust
+profits_la~h | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------+------------------------------------------------------------------
+      female |   -912.38842   333.7467    -2.73   0.006    -1567.089   -257.6881
+         age |    11.616669   21.63005     0.54   0.591    -30.81431    54.04765
+years_oper~n |   -5.4504432   41.03857    -0.13   0.894     -85.9545    75.05362
+business_p~c |    291.83078   388.8504     0.75   0.453    -470.9648    1054.626
+       _cons |    2481.7826   794.7835     3.12   0.002     922.6809    4040.884
+--------------------------------------------------------------------------------
+. sum profit
+
+    Variable |        Obs        Mean   Std. dev.        Min        Max
+-------------+---------------------------------------------------------
+profits_la~h |      1,405    2869.384    6159.854          0     120000
+. estadd scalar mean 2869.3836298932383, replace
+line 175: estadd scalar mean `r(mean)', replace
+Parse error at byte 0: error: unknown command 'estadd'. Did you mean 'estout'?
+  estadd scalar mean 2869.3836298932383, replace
+  ^
+r(199);
+. estadd local industry "No" , replace
+line 176: estadd local industry "No" , replace
+Parse error at byte 0: error: unknown command 'estadd'. Did you mean 'estout'?
+  estadd local industry "No" , replace
+  ^
+r(199);
+. eststo: reg profit female business_network_index m_business_network_index age years_operation business_primary_inc, r
+line 178: eststo: reg profit female business_network_index m_business_network_index `controls', r
+Variable not found: business_network_index
+r(111);
+. sum profit
+
+    Variable |        Obs        Mean   Std. dev.        Min        Max
+-------------+---------------------------------------------------------
+profits_la~h |      1,405    2869.384    6159.854          0     120000
+. estadd scalar mean 2869.3836298932383, replace
+line 180: estadd scalar mean `r(mean)', replace
+Parse error at byte 0: error: unknown command 'estadd'. Did you mean 'estout'?
+  estadd scalar mean 2869.3836298932383, replace
+  ^
+r(199);
+. estadd local industry "No" , replace
+line 181: estadd local industry "No" , replace
+Parse error at byte 0: error: unknown command 'estadd'. Did you mean 'estout'?
+  estadd local industry "No" , replace
+  ^
+r(199);
+. eststo: reg profit female business_network_female_index m_business_network_female_index age years_operation business_primary_inc, r
+line 183: eststo: reg profit female business_network_female_index m_business_network_female_index `controls', r
+Variable not found: business_network_female_index
+r(111);
+. sum profit
+
+    Variable |        Obs        Mean   Std. dev.        Min        Max
+-------------+---------------------------------------------------------
+profits_la~h |      1,405    2869.384    6159.854          0     120000
+. estadd scalar mean 2869.3836298932383, replace
+line 185: estadd scalar mean `r(mean)', replace
+Parse error at byte 0: error: unknown command 'estadd'. Did you mean 'estout'?
+  estadd scalar mean 2869.3836298932383, replace
+  ^
+r(199);
+. estadd local industry "No" , replace
+line 186: estadd local industry "No" , replace
+Parse error at byte 0: error: unknown command 'estadd'. Did you mean 'estout'?
+  estadd local industry "No" , replace
+  ^
+r(199);
+. eststo: reg profit female business_network_friendrel_index m_business_network_friendrel age years_operation business_primary_inc, r
+line 188: eststo: reg profit female business_network_friendrel_index m_business_network_friendrel `controls', r
+Variable not found: business_network_friendrel_index
+r(111);
+. sum profit
+
+    Variable |        Obs        Mean   Std. dev.        Min        Max
+-------------+---------------------------------------------------------
+profits_la~h |      1,405    2869.384    6159.854          0     120000
+. estadd scalar mean 2869.3836298932383, replace
+line 190: estadd scalar mean `r(mean)', replace
+Parse error at byte 0: error: unknown command 'estadd'. Did you mean 'estout'?
+  estadd scalar mean 2869.3836298932383, replace
+  ^
+r(199);
+. estadd local industry "No" , replace
+line 191: estadd local industry "No" , replace
+Parse error at byte 0: error: unknown command 'estadd'. Did you mean 'estout'?
+  estadd local industry "No" , replace
+  ^
+r(199);
+. eststo: reg profit female business_network_index business_network_female_index business_network_friendrel_index m_business_network_index m_business_network_female_index m_business_network_friendrel age years_operation business_primary_inc, r
+line 193: eststo: reg profit female business_network_index business_network_female_index business_network_friendrel_index m_business_network_index m_business_network_female_index m_business_network_friendrel `controls', r
+Variable not found: business_network_index
+r(111);
+. sum profit
+
+    Variable |        Obs        Mean   Std. dev.        Min        Max
+-------------+---------------------------------------------------------
+profits_la~h |      1,405    2869.384    6159.854          0     120000
+. estadd scalar mean 2869.3836298932383, replace
+line 195: estadd scalar mean `r(mean)', replace
+Parse error at byte 0: error: unknown command 'estadd'. Did you mean 'estout'?
+  estadd scalar mean 2869.3836298932383, replace
+  ^
+r(199);
+. estadd local industry "No" , replace
+line 196: estadd local industry "No" , replace
+Parse error at byte 0: error: unknown command 'estadd'. Did you mean 'estout'?
+  estadd local industry "No" , replace
+  ^
+r(199);
+. eststo: reg profit female business_network_index business_network_female_index business_network_friendrel_index m_business_network_index m_business_network_female_index m_business_network_friendrel age years_operation business_primary_inc product_aginput product_livestock product_crop product_cocoa product_forestry product_fish product_processed, r
+line 198: eststo: reg profit female business_network_index business_network_female_index business_network_friendrel_index m_business_network_index m_business_network_female_index m_business_network_friendrel `controls' `controls2', r
+Variable not found: business_network_index
+r(111);
+. sum profit
+
+    Variable |        Obs        Mean   Std. dev.        Min        Max
+-------------+---------------------------------------------------------
+profits_la~h |      1,405    2869.384    6159.854          0     120000
+. estadd scalar mean 2869.3836298932383, replace
+line 200: estadd scalar mean `r(mean)', replace
+Parse error at byte 0: error: unknown command 'estadd'. Did you mean 'estout'?
+  estadd scalar mean 2869.3836298932383, replace
+  ^
+r(199);
+. estadd local industry "Yes" , replace
+line 201: estadd local industry "Yes" , replace
+Parse error at byte 0: error: unknown command 'estadd'. Did you mean 'estout'?
+  estadd local industry "Yes" , replace
+  ^
+r(199);
+. esttab using "/tmp/ghana-audit-zodxe58u/work/output/tables/Table3.tex", replace 	 keep(female business_network_index business_network_female_index business_network_friendrel_index) se star(* .10 ** .05 *** .01) r2 	 s(industry mean r2 N ,      label("Product FE" "Mean" "\(R^2\)" "N")) 	 label nomtitles 	 booktabs f noomitted nobaselevel
+line 203: esttab using "${output_tables}/Table3.tex", replace ///
+	 keep(female business_network_index business_network_female_index business_network_friendrel_index) se star(* .10 ** .05 *** .01) r2 ///
+	 s(industry mean r2 N , ///
+     label("Product FE" "Mean" "\(R^2\)" "N")) ///
+	 label nomtitles ///
+	 booktabs f noomitted nobaselevel
+Parse error at byte 7: error: esttab does not support the 'using' clause
+  esttab using "/tmp/ghana-audit-zodxe58u/work/output/tables/Table3.tex", replace 	 keep(female business_network_index business_network_female_index business_network_friendrel_index) se star(* .10 ** .05 *** .01) r2 	 s(industry mean r2 N ,      label("Product FE" "Mean" "\(R^2\)" "N")) 	 label nomtitles 	 booktabs f noomitted nobaselevel
+         ^
+r(198);
+. replace business_network_index = . if business_network_index == -9
+line 211: replace business_network_index = . if business_network_index == -9
+Variable not found: business_network_index
+r(111);
+. foreach x in collegedegree business_at_home hours_childcare {
+. gen m_collegedegree = mi(collegedegree)
+. replace collegedegree = -9 if mi(collegedegree)
+. gen m_business_at_home = mi(business_at_home)
+. replace business_at_home = -9 if mi(business_at_home)
+. gen m_hours_childcare = mi(hours_childcare)
+. replace hours_childcare = -9 if mi(hours_childcare)
+. eststo clear
+(eststo: all stored estimates cleared)
+. eststo: reg business_network_index female age years_operation business_primary_inc ,r
+line 221: eststo: reg business_network_index female `controls' ,r 
+Variable not found: business_network_index
+r(111);
+. sum business_network_index
+line 222: sum business_network_index 
+Variable not found: business_network_index
+r(111);
+. estadd scalar mean 2869.3836298932383, replace
+line 223: estadd scalar mean `r(mean)', replace
+Parse error at byte 0: error: unknown command 'estadd'. Did you mean 'estout'?
+  estadd scalar mean 2869.3836298932383, replace
+  ^
+r(199);
+. estadd local industry "No" , replace
+line 224: estadd local industry "No" , replace
+Parse error at byte 0: error: unknown command 'estadd'. Did you mean 'estout'?
+  estadd local industry "No" , replace
+  ^
+r(199);
+. eststo: reg business_network_index female collegedegree m_collegedegree age years_operation business_primary_inc ,r
+line 226: eststo: reg business_network_index female collegedegree m_collegedegree `controls' ,r 
+Variable not found: business_network_index
+r(111);
+. sum business_network_index
+line 227: sum business_network_index
+Variable not found: business_network_index
+r(111);
+. estadd scalar mean 2869.3836298932383, replace
+line 228: estadd scalar mean `r(mean)', replace
+Parse error at byte 0: error: unknown command 'estadd'. Did you mean 'estout'?
+  estadd scalar mean 2869.3836298932383, replace
+  ^
+r(199);
+. estadd local industry "No" , replace
+line 229: estadd local industry "No" , replace
+Parse error at byte 0: error: unknown command 'estadd'. Did you mean 'estout'?
+  estadd local industry "No" , replace
+  ^
+r(199);
+. eststo: reg business_network_index female business_at_home m_business_at_home age years_operation business_primary_inc ,r
+line 231: eststo: reg business_network_index female business_at_home m_business_at_home `controls' ,r 
+Variable not found: business_network_index
+r(111);
+. sum business_network_index
+line 232: sum business_network_index
+Variable not found: business_network_index
+r(111);
+. estadd scalar mean 2869.3836298932383, replace
+line 233: estadd scalar mean `r(mean)', replace
+Parse error at byte 0: error: unknown command 'estadd'. Did you mean 'estout'?
+  estadd scalar mean 2869.3836298932383, replace
+  ^
+r(199);
+. estadd local industry "No" , replace
+line 234: estadd local industry "No" , replace
+Parse error at byte 0: error: unknown command 'estadd'. Did you mean 'estout'?
+  estadd local industry "No" , replace
+  ^
+r(199);
+. eststo: reg business_network_index female hours_childcare m_hours_childcare age years_operation business_primary_inc ,r
+line 236: eststo: reg business_network_index female hours_childcare m_hours_childcare `controls' ,r 
+Variable not found: business_network_index
+r(111);
+. sum business_network_index
+line 237: sum business_network_index
+Variable not found: business_network_index
+r(111);
+. estadd scalar mean 2869.3836298932383, replace
+line 238: estadd scalar mean `r(mean)', replace
+Parse error at byte 0: error: unknown command 'estadd'. Did you mean 'estout'?
+  estadd scalar mean 2869.3836298932383, replace
+  ^
+r(199);
+. estadd local industry "No" , replace
+line 239: estadd local industry "No" , replace
+Parse error at byte 0: error: unknown command 'estadd'. Did you mean 'estout'?
+  estadd local industry "No" , replace
+  ^
+r(199);
+. eststo: reg business_network_index female collegedegree business_at_home hours_childcare m_collegedegree m_business_at_home m_hours_childcare age years_operation business_primary_inc,r
+line 241: eststo: reg business_network_index female collegedegree business_at_home hours_childcare m_collegedegree m_business_at_home m_hours_childcare `controls',r 
+Variable not found: business_network_index
+r(111);
+. sum business_network_index
+line 242: sum business_network_index
+Variable not found: business_network_index
+r(111);
+. estadd scalar mean 2869.3836298932383, replace
+line 243: estadd scalar mean `r(mean)', replace
+Parse error at byte 0: error: unknown command 'estadd'. Did you mean 'estout'?
+  estadd scalar mean 2869.3836298932383, replace
+  ^
+r(199);
+. estadd local industry "No" , replace
+line 244: estadd local industry "No" , replace
+Parse error at byte 0: error: unknown command 'estadd'. Did you mean 'estout'?
+  estadd local industry "No" , replace
+  ^
+r(199);
+. eststo: reg business_network_index female collegedegree business_at_home hours_childcare m_collegedegree m_business_at_home m_hours_childcare age years_operation business_primary_inc product_aginput product_livestock product_crop product_cocoa product_forestry product_fish product_processed,r
+line 246: eststo: reg business_network_index female collegedegree business_at_home hours_childcare m_collegedegree m_business_at_home m_hours_childcare `controls' `controls2',r 
+Variable not found: business_network_index
+r(111);
+. sum business_network_index
+line 247: sum business_network_index
+Variable not found: business_network_index
+r(111);
+. estadd scalar mean 2869.3836298932383, replace
+line 248: estadd scalar mean `r(mean)', replace
+Parse error at byte 0: error: unknown command 'estadd'. Did you mean 'estout'?
+  estadd scalar mean 2869.3836298932383, replace
+  ^
+r(199);
+. estadd local industry "Yes" , replace
+line 249: estadd local industry "Yes" , replace
+Parse error at byte 0: error: unknown command 'estadd'. Did you mean 'estout'?
+  estadd local industry "Yes" , replace
+  ^
+r(199);
+. lab var collegedegree "College Degree"
+. lab var business_at_home "Business at Home"
+. lab var children "Number of Children"
+. lab var hours_childcare "Hours Spent Caregiving Last Week"
+. esttab using "/tmp/ghana-audit-zodxe58u/work/output/tables/Table2.tex", replace 	 keep(female collegedegree business_at_home hours_childcare) se star(* .10 ** .05 *** .01) r2 	 s(industry mean r2 N ,      label("Product FE" "Mean" "\(R^2\)" "N") fmt(%9.3f  %9.3f %9.3f %9.0f)) 	 label nomtitles 	 booktabs f noomitted nobaselevel
+line 256: esttab using "${output_tables}/Table2.tex", replace ///
+	 keep(female collegedegree business_at_home hours_childcare) se star(* .10 ** .05 *** .01) r2 ///
+	 s(industry mean r2 N , ///
+     label("Product FE" "Mean" "\(R^2\)" "N") fmt(%9.3f  %9.3f %9.3f %9.0f)) ///
+	 label nomtitles ///
+	 booktabs f noomitted nobaselevel
+Parse error at byte 7: error: esttab does not support the 'using' clause
+  esttab using "/tmp/ghana-audit-zodxe58u/work/output/tables/Table2.tex", replace 	 keep(female collegedegree business_at_home hours_childcare) se star(* .10 ** .05 *** .01) r2 	 s(industry mean r2 N ,      label("Product FE" "Mean" "\(R^2\)" "N") fmt(%9.3f  %9.3f %9.3f %9.0f)) 	 label nomtitles 	 booktabs f noomitted nobaselevel
+         ^
+r(198);
+. 
+end of do-file

@@ -1,0 +1,526 @@
+{
+  "package_id": 228101,
+  "deposit_version": "V1",
+  "audit_date": "2026-10-13",
+  "timezone": "America/New_York",
+  "engine": "stats_core native CLI, existing debug binary built 2026-10-13 11:41; no engine changes made",
+  "status": "partial-capability-audit; full replication pending",
+  "entrypoint": "code/master.do",
+  "authors": [
+    "Monica Lambon-Quayefio",
+    "Edward Asiedu",
+    "Francesca Truffa",
+    "Ashley Wong"
+  ],
+  "sources": {
+    "paper": "https://www.aeaweb.org/articles?id=10.1257/pandp.20251069",
+    "deposit": "https://www.openicpsr.org/openicpsr/project/228101/version/V1/view",
+    "deposit_doi": "https://doi.org/10.3886/E228101V1"
+  },
+  "original_files_verified": true,
+  "original_file_count": 6,
+  "modified_original_files": [],
+  "unpacked_original_bytes": 1292196,
+  "max_original_file_bytes": 1179331,
+  "data_inventory": [
+    {
+      "path": "data/raw/gender_gaps_ghana.dta",
+      "rows": 1487,
+      "variables": 146,
+      "variable_labels_loaded": 97,
+      "value_label_sets_loaded": 37
+    }
+  ],
+  "expected_outputs": [
+    "data/analysis/gender_gaps_ghana_clean.dta",
+    "log/gender_gaps_ghana_code_log.txt",
+    "output/tables/Table1.tex",
+    "output/tables/Table2.tex",
+    "output/tables/Table3.tex",
+    "output/figures/Figure1a.eps",
+    "output/figures/Figure1b.eps"
+  ],
+  "normal_runs": [
+    {
+      "script": "code/master.do",
+      "first_error_line": 14,
+      "first_error_command": "ssc install estout",
+      "stata_code": 199,
+      "result": "stops"
+    },
+    {
+      "script": "code/clean.do",
+      "external_setup": "global data points to sandbox copy/data",
+      "first_error_line": 139,
+      "first_error_command": "egen total_collab = rowtotal(b30a-b30g), missing",
+      "stata_code": 198,
+      "result": "stops before index construction and save"
+    }
+  ],
+  "diagnostic_runs": [
+    {
+      "script": "code/clean.do",
+      "mode": "do ..., nostop",
+      "log": "clean-nostop.log",
+      "note": "Scratch only. Reaches save but generated dataset lacks total_collab and three index variables; not valid replication data."
+    },
+    {
+      "script": "code/output.do",
+      "mode": "do ..., nostop",
+      "log": "output-nostop.log",
+      "valid_robust_ols_fits": 15,
+      "note": "Uses incomplete scratch cleaned dataset. Includes 14 non-index gender comparisons plus profit baseline. Does not reproduce all regressions or any author tables/figures."
+    }
+  ],
+  "verified_capabilities": [
+    "Load original DTA with labels",
+    "rename, generate, replace, split",
+    "reshape long from 1487 to 62454 records and back to 1487 via keep n==1",
+    "destring, sort, grouped egen max, loop/macro expansion",
+    "egen rowtotal without missing option",
+    "robust OLS and eststo storage on valid variables",
+    "selected console esttab options: star, label, nonum, keep, se, noomitted",
+    "basic coefplot from stored regression, recast(bar), legend(position), regions, xline"
+  ],
+  "confirmed_missing_features": [
+    "ssc",
+    "adopath",
+    "program/rclass ado loading",
+    "zindex command",
+    "egen rowtotal missing option",
+    "estpost summarize/ttest",
+    "estadd scalar/local",
+    "esttab using export and multiple listed formatting options",
+    "matrix coln and row-slice multi-cell assignments",
+    "coefplot matrix data source and multiple listed options",
+    "EPS export"
+  ],
+  "not_verified": [
+    "Stata numerical parity (installed license expired; no reference numerical transcript in archive)",
+    "Exact bundled zindex index values and returned scalars",
+    "Full three table/final figure content or appearance",
+    "Browser/WASM capability parity",
+    "Any inference about regression failures on absent index variables as an additional engine gap"
+  ],
+  "option_probes": [
+    {
+      "command": "use \"<scratch-package-root>/data/raw/gender_gaps_ghana.dta\", clear",
+      "status": "executed",
+      "error_messages": []
+    },
+    {
+      "command": "rename g6 y",
+      "status": "executed",
+      "error_messages": []
+    },
+    {
+      "command": "rename a16 x",
+      "status": "executed",
+      "error_messages": []
+    },
+    {
+      "command": "generate group = gender==\"Female\"",
+      "status": "executed",
+      "error_messages": []
+    },
+    {
+      "command": "regress y x, r",
+      "status": "executed",
+      "error_messages": []
+    },
+    {
+      "command": "eststo A",
+      "status": "executed",
+      "error_messages": []
+    },
+    {
+      "command": "estpost summarize y x",
+      "status": "rejected",
+      "error_messages": [
+        "Parse error at byte 0: error: unknown command 'estpost'. Did you mean 'estout'?"
+      ]
+    },
+    {
+      "command": "estpost ttest y x, by(group)",
+      "status": "rejected",
+      "error_messages": [
+        "Parse error at byte 0: error: unknown command 'estpost'. Did you mean 'estout'?"
+      ]
+    },
+    {
+      "command": "estadd scalar mean 4, replace",
+      "status": "rejected",
+      "error_messages": [
+        "Parse error at byte 0: error: unknown command 'estadd'. Did you mean 'estout'?"
+      ]
+    },
+    {
+      "command": "estadd local industry \"No\", replace",
+      "status": "rejected",
+      "error_messages": [
+        "Parse error at byte 0: error: unknown command 'estadd'. Did you mean 'estout'?"
+      ]
+    },
+    {
+      "command": "esttab A using \"<scratch-package-root>/output/tables/check.tex\", replace",
+      "status": "rejected",
+      "error_messages": [
+        "Parse error at byte 9: error: esttab does not support the 'using' clause"
+      ]
+    },
+    {
+      "command": "esttab A, cells(\"mean(pattern(1 1 1 0) fmt(2)) b(star pattern(0 0 0 1) fmt(2)) p(pattern(0 0 0 1) par fmt(2))\")",
+      "status": "rejected",
+      "error_messages": [
+        "Parse error at byte 10: error: unknown option 'cells' for esttab; valid: b, se, t, z, p, ci, star, nostar, starlevels, ar2, stats, title, label, noobs, noconstant, keep, drop, order, mtitles, compress, varwidth, modelwidth, nonotes, addnotes, replace, indicate, noomitted, nonumbers"
+      ]
+    },
+    {
+      "command": "esttab A, star(* .10 * .05 ** .01)",
+      "status": "executed",
+      "error_messages": []
+    },
+    {
+      "command": "esttab A, label",
+      "status": "executed",
+      "error_messages": []
+    },
+    {
+      "command": "esttab A, nonum",
+      "status": "executed",
+      "error_messages": []
+    },
+    {
+      "command": "esttab A, collabels(\"Mean\" \"B\" \"p\")",
+      "status": "rejected",
+      "error_messages": [
+        "Parse error at byte 10: error: unknown option 'collabels' for esttab; valid: b, se, t, z, p, ci, star, nostar, starlevels, ar2, stats, title, label, noobs, noconstant, keep, drop, order, mtitles, compress, varwidth, modelwidth, nonotes, addnotes, replace, indicate, noomitted, nonumbers"
+      ]
+    },
+    {
+      "command": "esttab A, booktabs",
+      "status": "rejected",
+      "error_messages": [
+        "Parse error at byte 10: error: unknown option 'booktabs' for esttab; valid: b, se, t, z, p, ci, star, nostar, starlevels, ar2, stats, title, label, noobs, noconstant, keep, drop, order, mtitles, compress, varwidth, modelwidth, nonotes, addnotes, replace, indicate, noomitted, nonumbers"
+      ]
+    },
+    {
+      "command": "esttab A, wide",
+      "status": "rejected",
+      "error_messages": [
+        "Parse error at byte 10: error: unknown option 'wide' for esttab; valid: b, se, t, z, p, ci, star, nostar, starlevels, ar2, stats, title, label, noobs, noconstant, keep, drop, order, mtitles, compress, varwidth, modelwidth, nonotes, addnotes, replace, indicate, noomitted, nonumbers"
+      ]
+    },
+    {
+      "command": "esttab A, mtitles(\"All\" \"Male\" \"Female\" \"Difference\")",
+      "status": "rejected",
+      "error_messages": [
+        "Parse error: mtitles() count (4) must match number of models (1)"
+      ]
+    },
+    {
+      "command": "esttab A, refcat(x \"Products\", nolabel)",
+      "status": "rejected",
+      "error_messages": [
+        "Parse error at byte 10: error: unknown option 'refcat' for esttab; valid: b, se, t, z, p, ci, star, nostar, starlevels, ar2, stats, title, label, noobs, noconstant, keep, drop, order, mtitles, compress, varwidth, modelwidth, nonotes, addnotes, replace, indicate, noomitted, nonumbers"
+      ]
+    },
+    {
+      "command": "esttab A, keep(x)",
+      "status": "executed",
+      "error_messages": []
+    },
+    {
+      "command": "esttab A, se",
+      "status": "executed",
+      "error_messages": []
+    },
+    {
+      "command": "esttab A, r2",
+      "status": "rejected",
+      "error_messages": [
+        "Parse error at byte 10: error: unknown option 'r2' for esttab; valid: b, se, t, z, p, ci, star, nostar, starlevels, ar2, stats, title, label, noobs, noconstant, keep, drop, order, mtitles, compress, varwidth, modelwidth, nonotes, addnotes, replace, indicate, noomitted, nonumbers"
+      ]
+    },
+    {
+      "command": "esttab A, s(industry mean r2 N, label(\"Product FE\" \"Mean\" \"R2\" \"N\") fmt(%9.3f %9.3f %9.3f %9.0f))",
+      "status": "rejected",
+      "error_messages": [
+        "Parse error at byte 10: error: unknown option 's' for esttab; valid: b, se, t, z, p, ci, star, nostar, starlevels, ar2, stats, title, label, noobs, noconstant, keep, drop, order, mtitles, compress, varwidth, modelwidth, nonotes, addnotes, replace, indicate, noomitted, nonumbers"
+      ]
+    },
+    {
+      "command": "esttab A, nomtitles",
+      "status": "rejected",
+      "error_messages": [
+        "Parse error at byte 10: error: unknown option 'nomtitles' for esttab; valid: b, se, t, z, p, ci, star, nostar, starlevels, ar2, stats, title, label, noobs, noconstant, keep, drop, order, mtitles, compress, varwidth, modelwidth, nonotes, addnotes, replace, indicate, noomitted, nonumbers"
+      ]
+    },
+    {
+      "command": "esttab A, f",
+      "status": "rejected",
+      "error_messages": [
+        "Parse error at byte 10: error: unknown option 'f' for esttab; valid: b, se, t, z, p, ci, star, nostar, starlevels, ar2, stats, title, label, noobs, noconstant, keep, drop, order, mtitles, compress, varwidth, modelwidth, nonotes, addnotes, replace, indicate, noomitted, nonumbers"
+      ]
+    },
+    {
+      "command": "esttab A, noomitted",
+      "status": "executed",
+      "error_messages": []
+    },
+    {
+      "command": "esttab A, nobaselevel",
+      "status": "rejected",
+      "error_messages": [
+        "Parse error at byte 10: error: unknown option 'nobaselevel' for esttab; valid: b, se, t, z, p, ci, star, nostar, starlevels, ar2, stats, title, label, noobs, noconstant, keep, drop, order, mtitles, compress, varwidth, modelwidth, nonotes, addnotes, replace, indicate, noomitted, nonumbers"
+      ]
+    },
+    {
+      "command": "matrix male = J(1,3,.)",
+      "status": "executed",
+      "error_messages": []
+    },
+    {
+      "command": "matrix female = J(1,3,.)",
+      "status": "executed",
+      "error_messages": []
+    },
+    {
+      "command": "matrix male[1,1] = 2",
+      "status": "executed",
+      "error_messages": []
+    },
+    {
+      "command": "matrix female[1,1] = 3",
+      "status": "executed",
+      "error_messages": []
+    },
+    {
+      "command": "matrix female[1,2] = 2.5",
+      "status": "executed",
+      "error_messages": []
+    },
+    {
+      "command": "matrix female[1,3] = 3.5",
+      "status": "executed",
+      "error_messages": []
+    },
+    {
+      "command": "matrix coln female = mean ll95 ul95",
+      "status": "rejected",
+      "error_messages": [
+        "invalid syntax"
+      ]
+    },
+    {
+      "command": "matrix female[1,1] = 3, 2.5, 3.5",
+      "status": "rejected",
+      "error_messages": [
+        "invalid syntax"
+      ]
+    },
+    {
+      "command": "coefplot (matrix(male[,1]), noci)",
+      "status": "rejected",
+      "error_messages": [
+        "Parse error: estimation result matrix(male[,1]) not found"
+      ]
+    },
+    {
+      "command": "coefplot (A, rename(x=\"Business Owners\"))",
+      "status": "rejected",
+      "error_messages": [
+        "Parse error: option rename() not allowed"
+      ]
+    },
+    {
+      "command": "coefplot (A, ci((female[,2] female[,3])))",
+      "status": "rejected",
+      "error_messages": [
+        "Parse error: option ci() not allowed"
+      ]
+    },
+    {
+      "command": "coefplot (A, color(navy))",
+      "status": "rejected",
+      "error_messages": [
+        "Parse error: option color() not allowed"
+      ]
+    },
+    {
+      "command": "coefplot (A, nokey)",
+      "status": "rejected",
+      "error_messages": [
+        "Parse error: option nokey not allowed"
+      ]
+    },
+    {
+      "command": "coefplot (A, mcolor(navy))",
+      "status": "rejected",
+      "error_messages": [
+        "Parse error: option mcolor() not allowed"
+      ]
+    },
+    {
+      "command": "coefplot (A, ciopts(color(navy)))",
+      "status": "rejected",
+      "error_messages": [
+        "Parse error: only ciopts(recast(...)) is supported"
+      ]
+    },
+    {
+      "command": "coefplot (A, mlabsize(medium))",
+      "status": "rejected",
+      "error_messages": [
+        "Parse error: option mlabsize() not allowed"
+      ]
+    },
+    {
+      "command": "coefplot A, recast(bar)",
+      "status": "executed",
+      "error_messages": []
+    },
+    {
+      "command": "coefplot A, barwidth(0.25)",
+      "status": "rejected",
+      "error_messages": [
+        "Parse error: option barwidth() not allowed"
+      ]
+    },
+    {
+      "command": "coefplot A, fcolor(*.75)",
+      "status": "rejected",
+      "error_messages": [
+        "Parse error: option fcolor() not allowed"
+      ]
+    },
+    {
+      "command": "coefplot A, citop",
+      "status": "rejected",
+      "error_messages": [
+        "Parse error: option citop not allowed"
+      ]
+    },
+    {
+      "command": "coefplot A, ciopts(recast(rcap) color(gs8))",
+      "status": "executed",
+      "error_messages": []
+    },
+    {
+      "command": "coefplot A, base omitted",
+      "status": "rejected",
+      "error_messages": [
+        "Parse error: option base not allowed"
+      ]
+    },
+    {
+      "command": "coefplot A, mlabel",
+      "status": "rejected",
+      "error_messages": [
+        "Parse error: option mlabel not allowed"
+      ]
+    },
+    {
+      "command": "coefplot A, mlabcolor(black)",
+      "status": "rejected",
+      "error_messages": [
+        "Parse error: option mlabcolor() not allowed"
+      ]
+    },
+    {
+      "command": "coefplot A, mlabp(2)",
+      "status": "rejected",
+      "error_messages": [
+        "Parse error: option mlabp() not allowed"
+      ]
+    },
+    {
+      "command": "coefplot A, mlabg(*1.2)",
+      "status": "rejected",
+      "error_messages": [
+        "Parse error: option mlabg() not allowed"
+      ]
+    },
+    {
+      "command": "coefplot A, mlabf(%9.2f)",
+      "status": "rejected",
+      "error_messages": [
+        "Parse error: option mlabf() not allowed"
+      ]
+    },
+    {
+      "command": "coefplot A, legend(position(6))",
+      "status": "executed",
+      "error_messages": []
+    },
+    {
+      "command": "coefplot A, plotregion(fcolor(white))",
+      "status": "executed",
+      "error_messages": []
+    },
+    {
+      "command": "coefplot A, graphregion(fcolor(white) ifcolor(white) color(white) icolor(white))",
+      "status": "executed",
+      "error_messages": []
+    },
+    {
+      "command": "coefplot A, bgcolor(white)",
+      "status": "rejected",
+      "error_messages": [
+        "Parse error: option bgcolor() not allowed"
+      ]
+    },
+    {
+      "command": "coefplot A, legend(rows(1))",
+      "status": "rejected",
+      "error_messages": [
+        "option legend(): suboption rows is not supported"
+      ]
+    },
+    {
+      "command": "coefplot A, grid(glcolor(gs14) glpattern(dash))",
+      "status": "rejected",
+      "error_messages": [
+        "Parse error: option grid() not allowed"
+      ]
+    },
+    {
+      "command": "coefplot A, xlabel(-.2(.2).6)",
+      "status": "rejected",
+      "error_messages": [
+        "a readable graph cannot fit within the 4096-pixel canvas limit; combine fewer panels or shorten graph labels"
+      ]
+    },
+    {
+      "command": "coefplot A, xline(0, lcolor(gs5))",
+      "status": "executed",
+      "error_messages": []
+    },
+    {
+      "command": "graph export \"<scratch-package-root>/output/figures/check.eps\", replace",
+      "status": "rejected",
+      "error_messages": [
+        "Invalid format: savegraph() supports only .svg, .png, and .pdf"
+      ]
+    },
+    {
+      "command": "",
+      "status": "executed",
+      "error_messages": []
+    }
+  ],
+  "bundled_zindex_contract": {
+    "source": "zindex.ado",
+    "implementation_author": "Caton Brewster",
+    "version": "1.0.0 (2017-01-26)",
+    "sample": "marksample touse, novarlist; if/in exclusions apply, individual missing inputs do not remove an entire observation",
+    "first_stage": "Per-variable sample-standard-deviation z scores; mean() can select corresponding reference variables and condition() selects a reference subsample",
+    "combine": "rowmean over nonmissing z scores, then standardize that row mean again using the reference sample",
+    "outputs": "gen() index outside touse missing; r(m_variable) counts missing z scores inside touse; missing-component report and matrices",
+    "package_calls": [
+      "clean.do:266 business_network_index (7 components)",
+      "clean.do:277 business_network_friendrel_index (3 components)",
+      "clean.do:288 business_network_female_index (4 components)"
+    ]
+  }
+}
