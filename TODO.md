@@ -117,3 +117,39 @@ Evidence: [audit.json](validation/audit.json),
 [clean-nostop.log](validation/clean-nostop.log),
 [output-nostop.log](validation/output-nostop.log), and
 [options.log](validation/options.log).
+
+## Validation against Stata (2026-10-14)
+
+Stata 19.5 (csdid-era license, `ssc install coefplot` added) and the engine
+both ran the unchanged `master.do` on scratch copies without errors. Findings:
+
+- [x] **Fixed — `eststo` numbering and order.** `eststo clear` did not restart
+  the `est#` counter and stored sets were listed alphabetically, so Table 2's
+  columns came out as models 4, 5, 6, 1, 2, 3. Sets are now kept in storage
+  order and the counter restarts when the store is cleared or emptied.
+- [x] **Fixed — variable `export` saved as `_export`.** The DTA writer treated
+  Mata keywords as reserved names; only Stata's reserved words are renamed now.
+- [x] **Fixed — `if mi(z) & touse`.** A bare numeric operand of `&`/`|`
+  evaluated to missing, so `zindex`'s `count if mi(...) & touse` returned 0 and
+  its "missing values for" messages were absent.
+- [ ] **Open — extended missing values.** The raw data hold `.r`/`.d` codes
+  (`b28a`, `b32b2`, `hours_childcare`, ...), which the engine reads as `.`.
+  Stata's `replace suppliers_impt_women = . if b32b2==. & b32b2_2==. & b32b2_3==.`
+  keeps rows with `.r` (`.r == .` is false); the engine sets them missing. This
+  reaches `share_suppliers_impt_women`, `clients_impt_women` and the female
+  networking index, so Table 3's columns 3, 5 and 6 differ in the third digit
+  (Female −857.8 vs Stata's −856.2; Networking Index 356.8 vs 358.0). Needs
+  extended missing values in the dataset layer.
+- [x] **Verified — cleaned dataset.** `cf _all` against Stata's
+  `gender_gaps_ghana_clean.dta`: apart from the `.r`/`.d` codes and their
+  consequences above, the only differences are float rounding of z-score
+  intermediates (about 1e-7) in the three indices.
+- [x] **Verified — Tables 1 and 2.** Every value equals Stata's.
+- [x] **Fixed — LaTeX layout of `esttab using ... .tex`.** The engine now
+  pads cells to the model width with estout's star field, writes
+  `\begin{tabular}{l*{4}{ccc}}` (one `c` per cell element), plain right-aligned
+  `collabels()`, `\addlinespace` between coefficient blocks under `booktabs`
+  and no star legend when `cells()` is given; `Table1.tex` and `Table2.tex`
+  are byte-identical to Stata's, `Table3.tex` differs only by the `.r` values
+  above.
+- [ ] **Not compared — figures.** `graph export` output was not checked.
