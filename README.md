@@ -5,17 +5,19 @@ Monica Lambon-Quayefio, Edward Asiedu, Francesca Truffa, and Ashley Wong,
 
 This stats-camp repository preserves package **228101, version V1**, for
 inspection and capability testing in [stats.camp](https://stats.camp).
-All three deposited do-files, the bundled ado-file, the dataset, and the
-original `README.pdf` retain their original bytes and locations.
+The cleaning and output do-files, the bundled ado-file, the dataset, and the
+original `README.pdf` retain their original bytes and locations; `code/master.do`
+carries the one path edit the authors ask every replicator to make (see
+[Local modification](#local-modification)).
 
 **Open in stats.camp:**
 [code/master.do](https://stats.camp/app?open=https%3A%2F%2Fgithub.com%2Fstats-camp%2Freplication-ghana-business-networks.git&file=code%2Fmaster.do)
 
-**Status: partial analysis runs; full replication is pending.** The native
-audit on October 13, 2026 found confirmed setup, index, table, and figure
-gaps. [TODO.md](TODO.md) records them. The do-files were not changed to
-work around these gaps, and no statistical engine feature was implemented
-as part of packaging.
+**Status: the complete analysis replicates.** The unchanged master, cleaning
+and output scripts run in stats.camp, and a Stata 19.5 comparison on
+2026-10-15 found all three LaTeX tables byte-identical and the cleaned dataset
+equal up to float rounding. [TODO.md](TODO.md) records the audit history and
+the remaining figure-rendering differences. No analysis command was changed.
 
 ## Study and deposited material
 
@@ -36,92 +38,63 @@ occupy **1,292,196 bytes** (about 1.3 MB); the largest is the raw dataset,
 | `validation/source-manifest.json` | Archive hash and the size and SHA-256 of each original file |
 | `validation/audit.json` | Tested capabilities, confirmed gaps, limitations, and individual option probes |
 
-The scripts target `Table1.tex`, `Table2.tex`, and `Table3.tex`, plus
-`Figure1a.eps` and `Figure1b.eps`. They also create the cleaned dataset and
-a code log. These outputs are **not included in the deposit**, and this
-audit did not reproduce the complete tables or figures. Empty output
-directories are retained using `.gitkeep` files.
+The scripts write `Table1.tex`, `Table2.tex`, and `Table3.tex`, plus
+`Figure1a.eps` and `Figure1b.eps`, the cleaned dataset and a code log. These
+outputs are **not included in the deposit**; a run regenerates them. Empty
+output directories are retained using `.gitkeep` files.
 
 ## What runs
 
-The unchanged master stops at line 14, `ssc install estout`, with
-`r(199)`. It has the literal path placeholder `FOLDER`, and later uses
-`adopath` to find the bundled program. Both setup commands are presently
-unavailable in stats.camp.
+Everything. On 2026-10-15 the unchanged `code/master.do` was run in Stata 19.5
+(with `estout`, `ftools` and `coefplot` from SSC) and in the native stats.camp
+engine from scratch copies of this repository, launched from the package root.
+Neither run reports an error. The engine accepts `ssc install`
+(it prints a note that packages are not downloaded because the commands are
+built in) and `adopath +`, runs the bundled `zindex.ado`, `egen rowtotal(),
+missing`, `estpost summarize`/`ttest`, `estadd`, `esttab using ... .tex` with
+`cells()`, `booktabs` and `refcat()`, the matrix construction, and both
+`coefplot` calls.
 
-Running the unchanged cleaning script with an externally supplied `data`
-global successfully loads the DTA and labels, renames variables, generates
-and replaces values, splits product codes, reshapes 1,487 records into
-62,454 product records, destrings, computes grouped maxima, and returns to
-1,487 records. It first stops at **clean.do line 139**:
+Results:
 
-```stata
-egen total_collab = rowtotal(b30a-b30g), missing
-```
+- `Table1.tex`, `Table2.tex` and `Table3.tex` are byte-identical to Stata's.
+- `data/analysis/gender_gaps_ghana_clean.dta` equals Stata's file except
+  float rounding (about 1e-7) in the three z-score indices (`cf _all`).
+- `Figure1a.eps` and `Figure1b.eps` are written by both programs with the
+  same bars, points and confidence intervals. The engine's EPS writer used to
+  place text and reference lines off their SVG positions (labels ran into the
+  plot, the `6.71` value label was clipped, `xline(0)` sat beside the `0`
+  tick); since 2026-10-15 the EPS matches the engine's SVG and PNG, with
+  Stata's `-.2`-style tick labels. Only the font size and the s2color legend
+  box still differ. Side-by-side renderings are in the main repository's
+  `aea_replication/figure_comparison.html`.
 
-The `missing` option is rejected with `r(198)`. A diagnostic `do, nostop`
-run also confirms that all three `zindex` calls are unavailable.
-`rowtotal()` without this option, the later cleaning commands, and the
-save command execute. The resulting diagnostic dataset lacks the
-collaboration total and all three indices; it is not a valid completed
-analysis dataset and is not distributed here.
+Earlier audit transcripts under `validation/` (October 13, 2026) predate the
+engine features listed above and are kept as history. The browser build has
+not been tested separately.
 
-An unchanged `output.do, nostop` diagnostic run on that scratch dataset
-executes **15 robust OLS fits** on variables unaffected by the failed
-indices: 14 gender comparisons and the baseline profit regression. For
-example, `reg business_help_n female,r` uses 1,436 observations, and
-the baseline `eststo: reg profit female age years_operation
-business_primary_inc,r` uses 1,398. Estimate storage works. Independent
-option probes also execute basic console `esttab` and stored-model
-`coefplot` commands. These results demonstrate execution, not numerical
-agreement with Stata or completion of the paper's outputs.
+## Local modification
 
-Confirmed failures include `estpost`, `estadd`, LaTeX file export through
-`esttab using`, matrix column names and multi-cell row assignment, matrix
-sources and several options in `coefplot`, and EPS export. The
-[cleaning diagnostic](validation/clean-nostop.log),
-[output diagnostic](validation/output-nostop.log), and
-[individual option probes](validation/options.log) preserve the evidence.
-Downstream errors for missing indices are consequences of the cleaning
-failures, not additional evidence of missing regression features.
-
-The installed Stata license has expired, and the deposit provides no
-numerical reference transcript. Fresh Stata comparisons, the three
-indices' numerical values, complete tables, final figure appearance, and
-browser versus native parity remain unverified.
-
-## Paths without changing do-files
-
-The original master instructs replicators to edit `local path "FOLDER"`.
-This repository leaves that line untouched. On a native filesystem,
-launching from the package root with a directory alias named `FOLDER`
-pointing to that root satisfies the literal path. For example, on Unix,
-`ln -s . FOLDER` creates such an alias. Dependency and ado support would
-still be required to run the master successfully.
-
-Alternatively, set paths in the session and call the two unchanged
-scripts directly. In Stata, with the required `estout`, `ftools`, and
-`coefplot` packages installed, a session preamble can be:
+The deposited master sets `local path "FOLDER"` and instructs replicators to
+change that line to their own directory. On 2026-10-15 the line was replaced by
 
 ```stata
-global replication "/absolute/path/to/replication-ghana-business-networks"
-adopath + "${replication}"
-global data "${replication}/data"
-global output_tables "${replication}/output/tables"
-global output_figures "${replication}/output/figures"
-capture mkdir "${data}/analysis"
-capture mkdir "${output_tables}"
-capture mkdir "${output_figures}"
-do "${replication}/code/clean.do"
-do "${replication}/code/output.do"
+local path "`c(pwd)'"
 ```
 
-For a stats.camp capability check, set `global data "data"` from the
-package root, then `do "code/clean.do"`. The current engine stops at the
-`rowtotal(), missing` command above. `do ..., nostop` is useful for
-diagnostics only: it continues after errors and may save incomplete
-derived data. All audit runs were made in a separate scratch copy, so
-neither the original dataset nor deposited scripts were overwritten.
+(plus a three-line comment), so the master resolves `code/`, `data/`, `log/`
+and `output/` under the directory it is run from. Run `code/master.do` from the
+package root, in Stata or in stats.camp, and no `FOLDER` alias or session
+preamble is needed. Everything else in `master.do`, and all of `clean.do`,
+`output.do` and `zindex.ado`, is byte-identical to the deposit.
+[validation/source-manifest.json](validation/source-manifest.json) still records
+the deposited SHA-256 of `code/master.do`
+(`db175fd70633be9cd20001f03caffaf195192555dc4c43612f461dc733e088a7`), so a
+manifest check reports that file as changed; its current SHA-256 is
+`a54c9a2013a46ed78ad6756e45f8598e06038e037cbd34c9ac84f686bc8b4f9f`.
+
+All validation runs were made in separate scratch copies, so neither the
+original dataset nor the deposited scripts were overwritten.
 
 ## Attribution and source integrity
 

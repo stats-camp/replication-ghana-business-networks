@@ -132,24 +132,44 @@ both ran the unchanged `master.do` on scratch copies without errors. Findings:
 - [x] **Fixed — `if mi(z) & touse`.** A bare numeric operand of `&`/`|`
   evaluated to missing, so `zindex`'s `count if mi(...) & touse` returned 0 and
   its "missing values for" messages were absent.
-- [ ] **Open — extended missing values.** The raw data hold `.r`/`.d` codes
-  (`b28a`, `b32b2`, `hours_childcare`, ...), which the engine reads as `.`.
+- [x] **Fixed — extended missing values.** The raw data hold `.r`/`.d` codes
+  (`b28a`, `b32b2`, `hours_childcare`, ...), which the engine read as `.`, so
   Stata's `replace suppliers_impt_women = . if b32b2==. & b32b2_2==. & b32b2_3==.`
-  keeps rows with `.r` (`.r == .` is false); the engine sets them missing. This
-  reaches `share_suppliers_impt_women`, `clients_impt_women` and the female
-  networking index, so Table 3's columns 3, 5 and 6 differ in the third digit
-  (Female −857.8 vs Stata's −856.2; Networking Index 356.8 vs 358.0). Needs
-  extended missing values in the dataset layer.
+  (which keeps rows with `.r`, as `.r == .` is false) set them missing and
+  Table 3's columns 3, 5 and 6 differed in the third digit (Female −857.8 vs
+  Stata's −856.2). The dataset layer now keeps `.a`–`.z` through `use`/`save`,
+  expressions, `reshape` (the cleaning's `reshape long products`), `merge`,
+  `append`, `sort` and the other commands; `Table3.tex` is now byte-identical
+  to Stata's.
 - [x] **Verified — cleaned dataset.** `cf _all` against Stata's
-  `gender_gaps_ghana_clean.dta`: apart from the `.r`/`.d` codes and their
-  consequences above, the only differences are float rounding of z-score
-  intermediates (about 1e-7) in the three indices.
+  `gender_gaps_ghana_clean.dta`: the only differences are float rounding of
+  z-score intermediates (about 1e-7) in the three index variables.
 - [x] **Verified — Tables 1 and 2.** Every value equals Stata's.
 - [x] **Fixed — LaTeX layout of `esttab using ... .tex`.** The engine now
   pads cells to the model width with estout's star field, writes
   `\begin{tabular}{l*{4}{ccc}}` (one `c` per cell element), plain right-aligned
   `collabels()`, `\addlinespace` between coefficient blocks under `booktabs`
-  and no star legend when `cells()` is given; `Table1.tex` and `Table2.tex`
-  are byte-identical to Stata's, `Table3.tex` differs only by the `.r` values
-  above.
+  and no star legend when `cells()` is given; `Table1.tex`, `Table2.tex` and
+  `Table3.tex` are byte-identical to Stata's.
 - [ ] **Not compared — figures.** `graph export` output was not checked.
+
+## Re-validation (2026-10-15)
+
+Stata 19.5 and the engine ran the unchanged `master.do` again on fresh scratch
+copies; numerical parity holds.
+
+- [x] `Table1.tex`, `Table2.tex`, `Table3.tex` byte-identical to Stata's.
+- [x] Cleaned dataset equal to Stata's up to 1e-7 float rounding in the three
+  indices.
+- [x] **Figures.** `Figure1a.eps`/`Figure1b.eps` show the same estimates; the
+  engine's EPS writer lost the ancestor transforms of flattened text, so labels
+  overflowed into the plot and `xline(0)` sat beside the `0` tick. Fixed on
+  2026-10-15 (EPS now equals the SVG/PNG output); axis labels use Stata's
+  `-.2` style. Fonts remain larger than Stata's. See
+  `aea_replication/figure_comparison.html` in the main repository.
+- [ ] Verify the browser build separately.
+- [x] **Browser path.** The web UI has no `FOLDER` directory alias, so the
+  unchanged master failed at `log using "FOLDER/log/..."` and
+  `do "FOLDER/code/clean.do"`. Fixed on 2026-10-15 by making the one edit the
+  authors ask for: `local path "`c(pwd)'"` (see the README's Local
+  modification section); the master now runs from the package root.

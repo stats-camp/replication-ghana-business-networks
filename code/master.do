@@ -17,7 +17,10 @@ ssc install coefplot
 
 
 * Set username (Change this based on the system username)
-local path "FOLDER"
+* [stats.camp replication] The deposited placeholder `local path "FOLDER"`
+* is replaced by the directory this file is run from (the repository
+* root), as the instruction above asks each replicator to do. See README.md.
+local path "`c(pwd)'"
 
 * Set adopath for ado-file	
 adopath + "`path'"
