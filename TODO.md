@@ -1,10 +1,21 @@
-# Missing features and verification TODO
+# Replication verification tasks
+
+## Status 2026-10-17
+
+All scripts were rerun in StataNow 19.5 and the engine CLI (see the repository-level [REPLICATION_TODO.md](../../REPLICATION_TODO.md) for the method). Transcripts: `validation/stata-2026-10-17-*.log`, `validation/engine-2026-10-17-*.log`.
+
+- [x] Runs end to end in the engine; 411 aligned result rows (1801 numbers), 0 differing; 2 rows only in Stata's and 2 only in the engine's transcript. Errors: none.
+- [x] Adaptations: `master.do` runs from the package root; its `local path "FOLDER"` placeholder, which the authors ask every replicator to edit, reads `local path "`c(pwd)'"` (documented in the package README).
+- [ ] Only layout: the coefficient-table header abbreviates `business_~_n` (Stata) vs `business_h~n` (engine; open item 4).
+- [ ] Verify in the browser build.
+
+## History (2026-10-16 and earlier; superseded where the status above differs)
 
 Audit date: October 13, 2026. The list separates observed native engine
 failures from acceptance checks that still need a numerical or visual
 reference. No deposited do-file, ado-file, or dataset was modified.
 
-## Confirmed blockers, in execution order
+### Confirmed blockers, in execution order
 
 - [ ] **Provide a setup path for unchanged `master.do`.** `ssc install`
   stops at master line 14 with `r(199)`; `adopath +` is also unknown. The
@@ -67,7 +78,7 @@ reference. No deposited do-file, ado-file, or dataset was modified.
   authors require `Figure1a.eps` and `Figure1b.eps`; changing their
   do-files to another format is outside this package's scope.
 
-## Required acceptance checks, not yet established
+### Required acceptance checks, not yet established
 
 - [ ] **Verify all three indices against the exact bundled program.**
   The seven-component business-network index, three-component
@@ -118,7 +129,7 @@ Evidence: [audit.json](validation/audit.json),
 [output-nostop.log](validation/output-nostop.log), and
 [options.log](validation/options.log).
 
-## Validation against Stata (2026-10-14)
+### Validation against Stata (2026-10-14)
 
 Stata 19.5 (csdid-era license, `ssc install coefplot` added) and the engine
 both ran the unchanged `master.do` on scratch copies without errors. Findings:
@@ -153,7 +164,7 @@ both ran the unchanged `master.do` on scratch copies without errors. Findings:
   `Table3.tex` are byte-identical to Stata's.
 - [ ] **Not compared — figures.** `graph export` output was not checked.
 
-## Re-validation (2026-10-15)
+### Re-validation (2026-10-15)
 
 Stata 19.5 and the engine ran the unchanged `master.do` again on fresh scratch
 copies; numerical parity holds.
